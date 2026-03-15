@@ -1031,6 +1031,68 @@ interface YouTubeService {
 
 ---
 
+## 15-1. YouTube 비디오 ID 갱신 (Video ID Refresh)
+
+> `src/data/` 파일들의 비디오 ID는 API 없이 즉시 재생을 위해 하드코딩되어 있습니다.
+> 영상 삭제/비공개 전환에 대비하여 **월 1회** 갱신을 권장합니다.
+
+### 갱신 도구
+
+`/youtube-music-fetch` 스킬을 사용합니다.
+스킬 내부의 Python 스크립트(`.claude/skills/youtube-music-fetch/youtube_music_fetcher.py`)가 YouTube Data API v3을 호출합니다.
+
+```bash
+# 사전 준비
+pip install google-api-python-client python-dotenv
+# .env에 YOUTUBE_API_KEY=AIzaSy... 설정 필요
+```
+
+### AI가 비디오 ID 갱신 시 사용할 스킬
+
+각 가수의 `searchQuery`를 사용하여 **최소 10개 이상** 수집합니다.
+
+```
+# 기본 사용법
+/youtube-music-fetch {가수 searchQuery} --max 12
+
+# 클래식 가수 (결과 부족 시 필터 완화)
+/youtube-music-fetch {가수 searchQuery} --max 12 --no-filter
+
+# 카테고리/플레이리스트
+/youtube-music-fetch {카테고리 searchQuery} --max 12
+```
+
+### 갱신 대상 및 필드
+
+| 파일 | 대상 | 필드명 | 최소 개수 |
+|---|---|---|---|
+| `src/data/singers.ts` | 가수 20명 | `featuredVideoIds` | 10개 |
+| `src/data/categories.ts` | 카테고리 6개 | `featuredVideoIds` | 10개 |
+| `src/data/playlists.ts` | 플레이리스트 5개 | `videoIds` | 10개 |
+
+### 갱신 규칙
+
+1. **중복 금지**: 같은 파일 내에서 동일 비디오 ID가 중복되지 않도록 확인
+2. **스크립트 출력 활용**: TypeScript 배열 형식 출력을 복사하여 해당 배열에 붙여넣기
+3. **클래식 가수**: `--no-filter` 옵션 사용 (공식 MV가 적어 필터링 시 결과 부족)
+4. **API 할당량 주의**: 전체 갱신 ≈ 3,200 유닛 (일일 한도 10,000 유닛)
+5. **갱신 후 검증**: 반드시 `npx tsc --noEmit` 실행하여 타입 오류 확인
+
+### 빠른 갱신 요청 (사용자 → AI)
+
+```
+src/data/ 폴더의 모든 파일의 비디오 ID를 /youtube-music-fetch 스킬로 재갱신해줘.
+노래는 중복되지 않도록 가능하면 10개 이상으로.
+```
+
+### API 할당량 초과 시
+
+- **증상**: `quotaExceeded` 오류 발생
+- **리셋 시간**: 태평양 시간 자정 (한국시간 오후 4시)
+- **대안**: 다른 Google Cloud 프로젝트의 API 키 사용 또는 다음 날 재시도
+
+---
+
 ## 16. 검증 체크리스트 (Verification Checklist)
 
 모든 작업 완료 전 아래를 체크합니다.

@@ -71,6 +71,84 @@ npx eas build --platform all
 
 ---
 
+## YouTube 비디오 ID 갱신 가이드
+
+`src/data/` 폴더의 데이터 파일들(`singers.ts`, `categories.ts`, `playlists.ts`)에는 YouTube 비디오 ID가 하드코딩되어 있습니다. API 없이도 즉시 재생할 수 있도록 하기 위한 설계이며, 주기적으로 갱신이 필요합니다.
+
+### 사전 준비
+
+1. **YouTube Data API v3 키 발급**
+   - [Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 API 키 생성
+   - YouTube Data API v3 활성화 필요
+
+2. **API 키 설정** — 아래 중 하나 선택:
+   ```bash
+   # 방법 1: .env 파일에 추가
+   echo "YOUTUBE_API_KEY=AIzaSy..." >> .env
+
+   # 방법 2: 환경변수 직접 설정
+   export YOUTUBE_API_KEY=AIzaSy...
+   ```
+
+3. **Python 패키지 설치**
+   ```bash
+   pip install google-api-python-client python-dotenv
+   ```
+
+### 수집 스크립트 사용법
+
+수집 스크립트는 `.claude/skills/youtube-music-fetch/youtube_music_fetcher.py`에 위치합니다.
+
+```bash
+# 기본 검색 (가수명으로 공식 MV 검색)
+python .claude/skills/youtube-music-fetch/youtube_music_fetcher.py "임영웅 노래" --max 12
+
+# 필터 완화 (결과가 부족할 때)
+python .claude/skills/youtube-music-fetch/youtube_music_fetcher.py "현철 봉선화연정" --max 12 --no-filter
+
+# 플레이리스트에서 수집
+python .claude/skills/youtube-music-fetch/youtube_music_fetcher.py "PLxxxxxx" --playlist --max 20
+
+# JSON 파일로 저장
+python .claude/skills/youtube-music-fetch/youtube_music_fetcher.py "송가인" --max 15 --save results_songain.json
+```
+
+### Claude Code 스킬로 사용 (권장)
+
+Claude Code에서 `/youtube-music-fetch` 스킬로 더 편리하게 사용할 수 있습니다:
+
+```
+/youtube-music-fetch 임영웅 노래 --max 12
+/youtube-music-fetch 현철 봉선화연정 --max 12 --no-filter
+```
+
+전체 갱신 요청:
+
+```
+src/data/ 폴더의 모든 파일의 비디오 ID를 /youtube-music-fetch 스킬로 재갱신해줘.
+노래는 중복되지 않도록 가능하면 10개 이상으로.
+```
+
+### 갱신 대상 파일
+
+| 파일 | 내용 | 비디오 ID 필드 |
+|---|---|---|
+| `src/data/singers.ts` | 가수 20명 × 각 10개 이상 | `featuredVideoIds` |
+| `src/data/categories.ts` | 카테고리 6개 × 각 10개 이상 | `featuredVideoIds` |
+| `src/data/playlists.ts` | 플레이리스트 5개 × 각 10개 이상 | `videoIds` |
+
+### 주의사항
+
+- **API 할당량**: YouTube Data API v3 기본 할당량은 **10,000 유닛/일**
+  - 검색 1회 = 100 유닛, 영상 상세조회 1회 = 1 유닛
+  - 전체 갱신(31회 검색) ≈ 3,200 유닛 소요
+  - 할당량 초과 시 태평양 시간 자정(한국시간 오후 4시)에 리셋
+- **중복 제거**: 같은 비디오 ID가 한 파일 내에서 중복되지 않도록 확인
+- **갱신 주기**: 월 1회 권장 (영상 삭제/비공개 전환 대비)
+- **검증**: 갱신 후 반드시 `npx tsc --noEmit` 타입 검사 실행
+
+---
+
 ## YouTube URL 패턴 가이드
 
 YouTube는 영상 ID(`VIDEO_ID`)를 기반으로 다양한 리소스에 접근할 수 있는 URL 패턴을 제공합니다.
