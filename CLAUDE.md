@@ -4,6 +4,102 @@
 
 ---
 
+## 0. 검증 우선 원칙 (Verification-First Policy)
+
+> ⚠️ **이 섹션은 프로젝트의 최우선 원칙입니다. 코드 작성 전에 반드시 읽으세요.**
+
+### 핵심 원칙: 검증 없는 완료는 없다
+
+모든 기능 구현, 버그 수정, 리팩토링은 반드시 **검증 통과 후** 완료로 간주합니다.
+"코드를 작성했다" ≠ "기능이 동작한다". 검증이 기본(default)입니다.
+
+### 검증 3단계 파이프라인
+
+```
+[1단계] 정적 검사       [2단계] 빌드 검증       [3단계] E2E 검증
+npx tsc --noEmit  →  npx expo export  →  npx playwright test
+   (타입 오류 0)      (번들 오류 0)       (시나리오 전체 통과)
+```
+
+**모든 단계가 통과해야** PR 머지 / 작업 완료 처리 가능.
+어느 한 단계라도 실패하면 수정 후 전체 파이프라인을 다시 실행합니다.
+
+### AI가 코드 수정 후 반드시 실행할 명령
+
+```bash
+# 필수 검증 순서 (절대 생략 불가)
+npx tsc --noEmit                         # Step 1: 타입 검사
+npx expo export --platform web           # Step 2: 빌드
+npx playwright test --reporter=list      # Step 3: E2E (Playwright)
+```
+
+### 검증 실패 시 행동 규칙
+
+| 실패 유형 | 조치 |
+|---|---|
+| TypeScript 오류 | 타입 오류 수정 → 재검사 |
+| 빌드 오류 | 오류 메시지 분석 → 수정 → 재빌드 |
+| Playwright 테스트 실패 | 스크린샷 확인 → 원인 분석 → 수정 → 전체 재실행 |
+| 실패 원인 불명확 | 사용자에게 보고 (추측으로 우회 금지) |
+
+---
+
+## 0-1. Playwright E2E 테스트 가이드
+
+### 왜 Playwright인가
+
+- Expo 웹 빌드(`dist/`)를 실제 브라우저에서 검증
+- 스크린샷 비교로 시니어 UI 렌더링 확인
+- 탭 네비게이션, 모달, 폼 상호작용 자동 검증
+- CI/CD 파이프라인에 바로 통합 가능
+
+### 테스트 구조
+
+```
+tests/
+├── e2e/
+│   ├── home.spec.ts          # 홈 화면: 가수 목록, 추천, 탭 UI
+│   ├── navigation.spec.ts    # 탭 네비게이션 전환
+│   ├── onboarding.spec.ts    # 온보딩 3단계 플로우
+│   ├── favorite.spec.ts      # 보관함 (빈 상태, 아이템 삭제)
+│   ├── history.spec.ts       # 최근 기록
+│   ├── category.spec.ts      # 카테고리 선택 및 영상 목록
+│   ├── settings.spec.ts      # 설정: 글씨 크기, 테마
+│   └── senior-ux.spec.ts     # 시니어 UX 원칙 자동 검사
+└── playwright.config.ts
+```
+
+### 테스트 실행 방법
+
+```bash
+# 웹 빌드 후 서빙 (테스트 전 준비)
+npx expo export --platform web        # dist/ 생성
+npx serve dist -p 4173               # 정적 서버 실행
+
+# 별도 터미널에서 테스트 실행
+npx playwright test                   # 전체 테스트
+npx playwright test home              # 특정 파일만
+npx playwright test --ui              # 대화형 UI 모드
+npx playwright show-report            # HTML 리포트
+
+# playwright.config.ts의 webServer 설정으로 서버 자동 기동
+npx playwright test                   # 빌드 + 서빙 + 테스트 한 번에
+```
+
+### 시니어 UX 자동 검증 항목
+
+`tests/e2e/senior-ux.spec.ts`에서 다음 항목을 자동으로 검사합니다:
+
+| 검사 항목 | 기준 | 측정 방법 |
+|---|---|---|
+| 영어 UI 텍스트 없음 | 버튼/탭/헤더에 영어 금지 | DOM 텍스트 스캔 |
+| 최소 터치 영역 44px | 모든 버튼 ≥ 44×44px | bounding box 측정 |
+| 폰트 크기 기본 18px+ | body 텍스트 최소 18px | computed style |
+| 고대비 (배경/텍스트) | WCAG AA (4.5:1 이상) | 색상 대비 계산 |
+| 로그인 화면 없음 | 첫 화면 = 온보딩/홈 | URL + DOM 확인 |
+
+---
+
 ## 1. 프로젝트 개요 (Project Overview)
 
 | 항목 | 내용 |
@@ -932,6 +1028,31 @@ interface YouTubeService {
   searchVideos(query: string, maxResults?: number): Promise<Video[]>;
 }
 ```
+
+---
+
+## 16. 검증 체크리스트 (Verification Checklist)
+
+모든 작업 완료 전 아래를 체크합니다.
+
+### 코드 품질
+- [ ] `npx tsc --noEmit` — TypeScript 오류 0개
+- [ ] 영어 UI 텍스트 없음 (버튼, 탭, 헤더, 토스트)
+- [ ] 새 버튼/터치 요소 최소 44px 확인
+
+### 빌드
+- [ ] `npx expo export --platform web` 성공
+- [ ] 번들 크기 이전 대비 +20% 이하
+
+### Playwright E2E
+- [ ] `npx playwright test` 전체 통과
+- [ ] 실패한 테스트 스크린샷 확인 및 수정
+- [ ] 신규 기능에 대한 테스트 케이스 추가
+
+### 시니어 UX
+- [ ] `senior-ux.spec.ts` 통과 (고대비, 폰트 크기, 터치 영역)
+- [ ] 온보딩 플로우 정상 동작
+- [ ] 다크모드에서 렌더링 확인
 
 ---
 
