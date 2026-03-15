@@ -27,7 +27,11 @@ export const APP_CONFIG = {
     AD_FREE_UNTIL: '@trottong:ad_free_until',
     YT_CACHE_PREFIX: '@trottong:yt_cache_',
     SLEEP_TIMER_LAST: '@trottong:sleep_timer_last',
+    REMOTE_VIDEO_IDS: '@trottong:remote_video_ids',
   },
+
+  // 원격 비디오 ID 데이터 (GitHub Pages)
+  REMOTE_DATA_TTL_MS: 24 * 60 * 60 * 1000,  // 24시간 캐시
 
   // YouTube API (캐시 TTL)
   YT_CACHE_TTL_MS: 24 * 60 * 60 * 1000,  // 24시간

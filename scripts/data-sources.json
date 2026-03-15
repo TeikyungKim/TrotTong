@@ -1,0 +1,39 @@
+{
+  "singers": [
+    { "id": "lim-young-woong", "searchQuery": "임영웅 노래 모음", "tier": "mega" },
+    { "id": "lee-chan-won", "searchQuery": "이찬원 노래 모음", "tier": "mega" },
+    { "id": "young-tak", "searchQuery": "영탁 찐이야 노래", "tier": "mega" },
+    { "id": "song-ga-in", "searchQuery": "송가인 노래 모음", "tier": "mega" },
+    { "id": "na-hoon-a", "searchQuery": "나훈아 노래 모음 명곡", "tier": "mega" },
+    { "id": "joo-hyun-mi", "searchQuery": "주현미 신사동 그 사람 노래 모음", "tier": "popular" },
+    { "id": "jin-sung", "searchQuery": "진성 안동역에서 노래", "tier": "popular" },
+    { "id": "jeong-dong-won", "searchQuery": "정동원 노래 모음", "tier": "popular" },
+    { "id": "hong-ja", "searchQuery": "홍자 노래 모음", "tier": "popular" },
+    { "id": "park-hyun-bin", "searchQuery": "박현빈 샤방샤방 노래 모음", "tier": "popular" },
+    { "id": "hyun-cheol", "searchQuery": "현철 봉선화연정 노래", "tier": "classic" },
+    { "id": "tae-jin-a", "searchQuery": "태진아 사랑은 아무나 하나", "tier": "classic" },
+    { "id": "seol-un-do", "searchQuery": "설운도 다함께 차차차", "tier": "classic" },
+    { "id": "kim-heung-kook", "searchQuery": "김흥국 호랑나비", "tier": "classic" },
+    { "id": "nam-jin", "searchQuery": "남진 여자의 마음 노래", "tier": "classic" },
+    { "id": "cho-yong-pil", "searchQuery": "조용필 노래 모음 명곡", "tier": "classic" },
+    { "id": "moon-hee-ok", "searchQuery": "문희옥 트로트 노래 모음", "tier": "classic" },
+    { "id": "choi-jin-hee", "searchQuery": "최진희 사랑의 미로", "tier": "classic" },
+    { "id": "patti-kim", "searchQuery": "패티김 노래 모음", "tier": "classic" },
+    { "id": "na-mi", "searchQuery": "나미 슬픈 인연", "tier": "classic" }
+  ],
+  "categories": [
+    { "id": "ballad", "searchQuery": "트로트 발라드 명곡" },
+    { "id": "upbeat", "searchQuery": "신나는 트로트 최신" },
+    { "id": "classic", "searchQuery": "70년대 80년대 트로트 명곡" },
+    { "id": "latest", "searchQuery": "2024 최신 트로트" },
+    { "id": "bedtime", "searchQuery": "잠들기 좋은 트로트 발라드" },
+    { "id": "morning", "searchQuery": "아침 신나는 트로트" }
+  ],
+  "playlists": [
+    { "id": "top10-this-week", "searchQuery": "2024 트로트 인기 TOP 10" },
+    { "id": "bedtime", "searchQuery": "잠자리 트로트 발라드 모음" },
+    { "id": "drive", "searchQuery": "드라이브 신나는 트로트" },
+    { "id": "morning", "searchQuery": "아침 트로트 경쾌한" },
+    { "id": "classic-legends", "searchQuery": "70년대 80년대 전설 트로트 명곡" }
+  ]
+}

@@ -6,6 +6,7 @@ import { AppNavigator } from './src/navigation';
 import { useUserStore } from './src/store/userStore';
 import { useTheme } from './src/hooks/useTheme';
 import { useAppRating } from './src/hooks/useAppRating';
+import { loadRemoteData } from './src/services/remoteData';
 
 function AppContent() {
   const loadFromStorage = useUserStore(s => s.loadFromStorage);
@@ -15,6 +16,7 @@ function AppContent() {
   useEffect(() => {
     loadFromStorage();
     incrementOpenCount();
+    loadRemoteData(); // 원격 비디오 ID 로드 (비동기, 논블로킹)
   }, []);
 
   return (

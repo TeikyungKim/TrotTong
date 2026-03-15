@@ -11,6 +11,7 @@ import { useSound } from '../hooks/useSound';
 import { CATEGORIES } from '../data/categories';
 import { PLAYLISTS } from '../data/playlists';
 import { getPlaylistVideos, getCategoryVideos } from '../services/youtube';
+import { getCategoryVideoIds, getPlaylistVideoIds } from '../services/remoteData';
 import { getFontSize } from '../constants/fonts';
 import type { RootStackParamList } from '../types';
 
@@ -26,7 +27,8 @@ export function CategoryScreen() {
     play('select');
     const category = CATEGORIES.find(c => c.id === categoryId);
     if (category) {
-      const videos = getCategoryVideos(category.featuredVideoIds);
+      const videoIds = getCategoryVideoIds(category.id);
+      const videos = getCategoryVideos(videoIds);
       if (videos.length === 0) {
         Alert.alert('알림', '영상을 불러올 수 없어요. 잠시 후 다시 시도해 주세요.');
         return;
@@ -39,7 +41,8 @@ export function CategoryScreen() {
     play('select');
     const playlist = PLAYLISTS.find(p => p.id === playlistId);
     if (playlist) {
-      const videos = getPlaylistVideos(playlist.videoIds);
+      const videoIds = getPlaylistVideoIds(playlist.id);
+      const videos = getPlaylistVideos(videoIds);
       if (videos.length === 0) {
         Alert.alert('알림', '영상을 불러올 수 없어요. 잠시 후 다시 시도해 주세요.');
         return;
@@ -94,7 +97,7 @@ export function CategoryScreen() {
                   {cat.description}
                 </Text>
                 <Text style={[styles.songCount, { color: cat.color }]}>
-                  {cat.featuredVideoIds.length}곡 ▶
+                  {getCategoryVideoIds(cat.id).length}곡 ▶
                 </Text>
               </TouchableOpacity>
             ))}
@@ -125,7 +128,7 @@ export function CategoryScreen() {
                   {playlist.name}
                 </Text>
                 <Text style={[styles.playlistDesc, { color: colors.textMuted }]} numberOfLines={1}>
-                  {playlist.description} · {playlist.videoIds.length}곡
+                  {playlist.description} · {getPlaylistVideoIds(playlist.id).length}곡
                 </Text>
               </View>
               <Text style={[styles.arrow, { color: colors.accent }]}>▶</Text>

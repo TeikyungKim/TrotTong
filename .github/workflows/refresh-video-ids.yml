@@ -1,0 +1,49 @@
+name: Refresh Video IDs
+
+on:
+  schedule:
+    # 매일 06:00 KST (= 21:00 UTC 전날)
+    - cron: '0 21 * * *'
+  workflow_dispatch: # 수동 실행 가능
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install google-api-python-client python-dotenv
+
+      - name: Fetch previous data (fallback)
+        continue-on-error: true
+        run: |
+          mkdir -p output
+          curl -sf https://teikyungkim.github.io/TrotTong/data/video-ids.json \
+            -o output/previous.json || echo "No previous data available"
+
+      - name: Run refresh script
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python scripts/refresh-video-ids.py \
+            --config scripts/data-sources.json \
+            --previous output/previous.json \
+            --output output/data/video-ids.json
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output/data
+          destination_dir: data
+          keep_files: true
