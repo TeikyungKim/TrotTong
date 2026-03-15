@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import {
-  View, Text, FlatList, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, FlatList, StyleSheet, ScrollView,
   TouchableOpacity, Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '../hooks/useTheme';
@@ -59,7 +60,7 @@ export function HomeScreen() {
   const renderSeparator = () => <View style={{ width: 12 }} />;
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
         {/* 상단 헤더 */}
         <View style={[styles.header, { backgroundColor: colors.background }]}>

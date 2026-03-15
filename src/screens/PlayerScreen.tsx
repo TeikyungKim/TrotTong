@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, SafeAreaView, Alert, TouchableOpacity, Platform,
+  View, Text, ScrollView, StyleSheet, Alert, TouchableOpacity, Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useKeepAwake } from 'expo-keep-awake';

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView, StyleSheet,
-  SafeAreaView, Image, Alert,
+  Image, Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserStore } from '../store/userStore';
 import { useTheme } from '../hooks/useTheme';
 import { SINGERS } from '../data/singers';

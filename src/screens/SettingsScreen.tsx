@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView, StyleSheet,
-  SafeAreaView, Switch, Alert, Share,
+  Switch, Alert, Share,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
 import { getFontSize, BUTTON_HEIGHT } from '../constants/fonts';
@@ -100,7 +101,7 @@ export function SettingsScreen() {
   );
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <Text style={[styles.pageTitle, { color: colors.textPrimary, fontSize: getFontSize('heading', fontLevel) }]}>
           ⚙️ 설정
