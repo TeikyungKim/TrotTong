@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "generatedAt": "2026-03-15T13:02:16.442836+00:00",
+  "singers": {
+    "choi-jin-hee": [
+      "nR8AJ1I5mac",
+      "BVWzd661qu0",
+      "0f0lqYnCUVQ",
+      "wPZCs4Bv1rE",
+      "u3NFDFN1FJU",
+      "atYW--38V0w",
+      "53SmkitPUo8",
+      "bfbcKmqctG4",
+      "2ysejwjm59Y",
+      "Gkgs6Z5XTMI",
+      "X3w8Vg3sST4",
+      "Wl2W6RM11n8"
+    ],
+    "patti-kim": [
+      "YqxwIB0-HOA",
+      "BpQN9X2gsWI",
+      "rEMJqz7V1_s",
+      "FVw5grCWfPA",
+      "uAZsjJX_e0E",
+      "_QY-4qnoGeg",
+      "1IoymubBdQE",
+      "K8tShoRSYqo",
+      "fXPOQGN2sME",
+      "zcGTaWz1-PQ",
+      "RVLwALjES84",
+      "10Uv6YxGUbA"
+    ]
+  },
+  "categories": {
+    "latest": [
+      "AhmRaCQayv8",
+      "taBXRoQUVP8"
+    ]
+  },
+  "playlists": {
+    "top10-this-week": [
+      "E0ZHXVp_wUE",
+      "AhmRaCQayv8"
+    ],
+    "bedtime": [
+      "19oT04OuBhg"
+    ]
+  }
+}
