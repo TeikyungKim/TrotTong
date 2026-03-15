@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "트롯통",
+    "slug": "trottong",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#C0392B"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.trottong.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#C0392B"
+      },
+      "package": "com.trottong.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      ["expo-notifications", {
+        "icon": "./assets/notification-icon.png",
+        "color": "#C0392B"
+      }]
+    ]
+  }
+}
