@@ -9,11 +9,11 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
 import { useFavorites } from '../hooks/useFavorites';
+import { useSound } from '../hooks/useSound';
 import { VideoCard } from '../components/ui/VideoCard';
 import { AdBanner } from '../components/ui/AdBanner';
-import { getFontSize, BUTTON_HEIGHT } from '../constants/fonts';
+import { getFontSize } from '../constants/fonts';
 import type { RootStackParamList, Video } from '../types';
-import { APP_CONFIG } from '../constants/config';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -21,14 +21,16 @@ export function FavoriteScreen() {
   const navigation = useNavigation<Nav>();
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
-  const isPremium = useUserStore(s => s.prefs.isPremium);
-  const { favorites, removeFavorite, limit } = useFavorites();
+  const { favorites, removeFavorite } = useFavorites();
+  const { play } = useSound();
 
   const handleVideoPress = (video: Video) => {
+    play('tap');
     navigation.navigate('Player', { video, playlist: favorites });
   };
 
   const handleDelete = (videoId: string) => {
+    play('tap');
     Alert.alert(
       '보관함에서 삭제',
       '이 영상을 보관함에서 삭제할까요?',
@@ -46,17 +48,9 @@ export function FavoriteScreen() {
           ❤️ 내 보관함
         </Text>
         <Text style={[styles.count, { color: colors.textMuted, fontSize: getFontSize('caption', fontLevel) }]}>
-          {favorites.length} / {isPremium ? '무제한' : limit}개
+          {favorites.length}개
         </Text>
       </View>
-
-      {!isPremium && (
-        <View style={[styles.upgradeBar, { backgroundColor: '#FFF3CD', borderColor: '#F39C12' }]}>
-          <Text style={[styles.upgradeText, { fontSize: getFontSize('caption', fontLevel) }]}>
-            💛 트롯통 PLUS로 무제한 보관! 월 2,900원
-          </Text>
-        </View>
-      )}
 
       {favorites.length === 0 ? (
         <View style={styles.empty}>
@@ -110,12 +104,6 @@ const styles = StyleSheet.create({
   },
   title: { fontWeight: '700' },
   count: {},
-  upgradeBar: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-  },
-  upgradeText: { color: '#856404', fontWeight: '500' },
   list: {
     padding: 16,
   },

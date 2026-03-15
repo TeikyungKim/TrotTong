@@ -4,19 +4,17 @@ import { usePlayerStore } from '../../store/playerStore';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useTheme } from '../../hooks/useTheme';
 import { useUserStore } from '../../store/userStore';
+import { useSound } from '../../hooks/useSound';
 import { SleepTimerModal } from '../ui/SleepTimerModal';
-import { getFontSize, MIN_TOUCH_SIZE } from '../../constants/fonts';
+import { getFontSize } from '../../constants/fonts';
 
-interface Props {
-  onFavoriteLimitReached?: () => void;
-}
-
-export function PlayerControls({ onFavoriteLimitReached }: Props) {
+export function PlayerControls() {
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
   const [showTimer, setShowTimer] = useState(false);
   const { currentVideo, prevVideo, nextVideo, isRadioMode, setRadioMode, sleepTimerEndAt } = usePlayerStore();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { play } = useSound();
 
   if (!currentVideo) return null;
 
@@ -34,7 +32,10 @@ export function PlayerControls({ onFavoriteLimitReached }: Props) {
             borderColor: colors.accent,
           },
         ]}
-        onPress={() => setRadioMode(!isRadioMode)}
+        onPress={() => {
+          play('select');
+          setRadioMode(!isRadioMode);
+        }}
         activeOpacity={0.75}
       >
         <Text style={[styles.radioBtnText, { color: isRadioMode ? '#FFF' : colors.accent, fontSize: getFontSize('body', fontLevel) }]}>
@@ -47,7 +48,10 @@ export function PlayerControls({ onFavoriteLimitReached }: Props) {
         {/* 이전 곡 */}
         <TouchableOpacity
           style={[styles.controlBtn, { backgroundColor: colors.surfaceElevated }]}
-          onPress={prevVideo}
+          onPress={() => {
+            play('navigation');
+            prevVideo();
+          }}
           activeOpacity={0.75}
         >
           <Text style={styles.controlIcon}>⏮</Text>
@@ -61,8 +65,8 @@ export function PlayerControls({ onFavoriteLimitReached }: Props) {
             { backgroundColor: isFav ? '#FFEAEA' : colors.surfaceElevated, borderColor: isFav ? colors.accent : colors.border },
           ]}
           onPress={async () => {
-            const result = await toggleFavorite(currentVideo);
-            if (result.limitReached) onFavoriteLimitReached?.();
+            play('favorite');
+            await toggleFavorite(currentVideo);
           }}
           activeOpacity={0.75}
         >
@@ -75,7 +79,10 @@ export function PlayerControls({ onFavoriteLimitReached }: Props) {
         {/* 다음 곡 */}
         <TouchableOpacity
           style={[styles.controlBtn, { backgroundColor: colors.surfaceElevated }]}
-          onPress={nextVideo}
+          onPress={() => {
+            play('navigation');
+            nextVideo();
+          }}
           activeOpacity={0.75}
         >
           <Text style={styles.controlIcon}>⏭</Text>
@@ -89,7 +96,10 @@ export function PlayerControls({ onFavoriteLimitReached }: Props) {
           styles.timerBtn,
           { backgroundColor: timerActive ? '#FFF3CD' : colors.surfaceElevated, borderColor: timerActive ? '#F39C12' : colors.border },
         ]}
-        onPress={() => setShowTimer(true)}
+        onPress={() => {
+          play('timer');
+          setShowTimer(true);
+        }}
         activeOpacity={0.75}
       >
         <Text style={[styles.timerBtnText, { color: timerActive ? '#F39C12' : colors.textSecondary, fontSize: getFontSize('body', fontLevel) }]}>

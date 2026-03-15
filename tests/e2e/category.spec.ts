@@ -37,16 +37,15 @@ test.describe('카테고리 화면', () => {
     await expect(el).toBeVisible();
   });
 
-  test('카테고리 클릭 시 영상 목록이 로드된다', async ({ page }) => {
+  test('카테고리 클릭 시 플레이어 화면으로 이동한다', async ({ page }) => {
     // 카테고리 탭이 활성화된 상태에서 트로트 발라드 카드 클릭
     const categoryCard = page.getByText('트로트 발라드', { exact: true }).first();
     await expect(categoryCard).toBeVisible();
     await categoryCard.click();
     await page.waitForTimeout(1200);
-    // 영상 개수 또는 타이틀 표시 확인 — "(N곡)" 패턴
-    const hasCount = await page.getByText(/\(\d+곡\)/).isVisible({ timeout: 5000 }).catch(() => false);
-    // 또는 가수 노래 텍스트
-    const hasSong = await page.getByText(/노래/).first().isVisible({ timeout: 3000 }).catch(() => false);
-    expect(hasCount || hasSong).toBeTruthy();
+    // 플레이어 화면으로 이동했는지 확인 — 뒤로 버튼 또는 플레이어 컨트롤 존재
+    const hasBack = await page.getByText('뒤로').first().isVisible({ timeout: 5000 }).catch(() => false);
+    const hasControl = await page.getByText(/이전 곡|다음 곡/).first().isVisible({ timeout: 3000 }).catch(() => false);
+    expect(hasBack || hasControl).toBeTruthy();
   });
 });

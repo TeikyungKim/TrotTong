@@ -74,7 +74,7 @@ export type RewardedAdType = 'favorites' | 'ad-free-24h';
 // 네비게이션 파라미터
 export type RootStackParamList = {
   MainTabs: undefined;
-  Player: { video: Video; playlist?: Video[] };
+  Player: { video: Video; playlist?: Video[]; title?: string };
   Onboarding: undefined;
 };
 

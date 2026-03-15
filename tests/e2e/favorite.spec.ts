@@ -24,15 +24,9 @@ test.describe('보관함 화면', () => {
     }
   });
 
-  test('무료 제한 안내가 표시된다', async ({ page }) => {
-    // "0 / 20개" 또는 "무제한" 패턴 — 정확한 카운트 텍스트만 매칭
-    const countEl = page.getByText(/\d+ \/ (20개|무제한)/).first();
-    await expect(countEl).toBeVisible({ timeout: 3000 });
-  });
-
   test('보관함 카운트가 표시된다', async ({ page }) => {
-    // "0 / 20개" 패턴
-    const countEl = page.getByText(/\d+ \/ \d+개|\d+ \/ 무제한/).first();
+    // "0개" 패턴 — 제한 없이 총 개수만 표시
+    const countEl = page.getByText(/\d+개/).first();
     await expect(countEl).toBeVisible({ timeout: 3000 });
   });
 });

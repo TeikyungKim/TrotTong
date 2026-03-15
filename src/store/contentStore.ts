@@ -7,16 +7,16 @@ import { getSingerVideos } from '../services/youtube';
 
 interface ContentStore {
   singerVideos: Record<string, Video[]>;   // singerId → Video[]
-  loadSingerVideos: (singerId: string) => Promise<void>;
+  loadSingerVideos: (singerId: string) => void;
   getSingerVideoList: (singerId: string) => Video[];
 }
 
 export const useContentStore = create<ContentStore>((set, get) => ({
   singerVideos: {},
 
-  loadSingerVideos: async (singerId) => {
+  loadSingerVideos: (singerId) => {
     if (get().singerVideos[singerId]) return; // 이미 로드됨
-    const videos = await getSingerVideos(singerId);
+    const videos = getSingerVideos(singerId);
     set(state => ({
       singerVideos: { ...state.singerVideos, [singerId]: videos },
     }));

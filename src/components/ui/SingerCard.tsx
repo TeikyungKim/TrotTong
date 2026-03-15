@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TouchableOpacity, View, Text, Image, StyleSheet, Dimensions,
 } from 'react-native';
@@ -32,19 +32,8 @@ interface Props {
 export function SingerCard({ singer, onPress, isRecommended }: Props) {
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
-  const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
+  const thumbnailUri = getSingerThumbnail(singer.id);
   const [imageError, setImageError] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    getSingerThumbnail(singer.id).then(uri => {
-      console.log('[SingerCard] 썸네일 결과:', { singerId: singer.id, name: singer.name, uri });
-      if (!cancelled) setThumbnailUri(uri);
-    }).catch(err => {
-      console.error('[SingerCard] 썸네일 에러:', singer.id, err);
-    });
-    return () => { cancelled = true; };
-  }, [singer.id]);
 
   const showFallback = !thumbnailUri || imageError;
 

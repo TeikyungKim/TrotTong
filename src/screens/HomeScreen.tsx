@@ -16,6 +16,7 @@ import { AdBanner } from '../components/ui/AdBanner';
 import { SINGERS } from '../data/singers';
 import { getSingerVideos } from '../services/youtube';
 import { analytics, EVENTS } from '../services/analytics';
+import { useSound } from '../hooks/useSound';
 import { getFontSize } from '../constants/fonts';
 import type { RootStackParamList, Singer } from '../types';
 
@@ -31,8 +32,10 @@ export function HomeScreen() {
   const { recordSingerTap } = useAdManager();
   const { history } = useHistory();
   const recommended = useRecommendations(history, favoriteSingerIds);
+  const { play } = useSound();
 
   const handleSingerPress = useCallback(async (singer: Singer) => {
+    play('select');
     // 광고 주파수 체크
     await recordSingerTap();
 
@@ -40,8 +43,8 @@ export function HomeScreen() {
     analytics.logEvent(EVENTS.SINGER_SELECTED, { singer_name: singer.name, source: 'home' });
     await recordListen();
 
-    // 영상 로드 후 재생
-    const videos = await getSingerVideos(singer.id);
+    // 로컬 데이터에서 영상 로드
+    const videos = getSingerVideos(singer.id);
     if (videos.length === 0) {
       Alert.alert('알림', '영상을 불러올 수 없어요. 잠시 후 다시 시도해 주세요.');
       return;
@@ -65,9 +68,12 @@ export function HomeScreen() {
         {/* 상단 헤더 */}
         <View style={[styles.header, { backgroundColor: colors.background }]}>
           <View>
-            <Text style={[styles.appName, { color: colors.accent, fontSize: getFontSize('heading', fontLevel) }]}>
-              🎵 트롯통
-            </Text>
+            <View style={styles.appNameRow}>
+              <Text style={[styles.appNameEmoji, { fontSize: getFontSize('heading', fontLevel) }]}>🎵</Text>
+              <Text style={[styles.appName, { color: colors.accentGold, fontSize: getFontSize('heading', fontLevel) }]}>
+                트롯통
+              </Text>
+            </View>
             <Text style={[styles.appSub, { color: colors.textMuted, fontSize: getFontSize('caption', fontLevel) }]}>
               손 하나로 즐기는 트로트 방송
             </Text>
@@ -145,7 +151,19 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
   },
-  appName: { fontWeight: '900', letterSpacing: 1 },
+  appNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  appNameEmoji: {},
+  appName: {
+    fontWeight: '900',
+    letterSpacing: 2,
+    textShadowColor: 'rgba(184, 134, 11, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
   appSub: { marginTop: 2 },
   streakBadge: {
     paddingHorizontal: 12,

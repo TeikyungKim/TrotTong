@@ -6,7 +6,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
-import { getFontSize, BUTTON_HEIGHT } from '../constants/fonts';
+import { useSound } from '../hooks/useSound';
+import { getFontSize } from '../constants/fonts';
 import { cancelAllNotifications, scheduleDailyReminder } from '../services/notifications';
 import { analytics, EVENTS } from '../services/analytics';
 import type { FontLevel, ThemeMode } from '../types';
@@ -34,16 +35,18 @@ export function SettingsScreen() {
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
   const themeMode = useUserStore(s => s.prefs.themeMode);
   const notificationsEnabled = useUserStore(s => s.prefs.notificationsEnabled);
-  const isPremium = useUserStore(s => s.prefs.isPremium);
   const streak = useUserStore(s => s.streak);
   const { setFontLevel, setThemeMode, setNotificationsEnabled } = useUserStore();
+  const { play } = useSound();
 
   const handleFontChange = async (level: FontLevel) => {
+    play('tap');
     await setFontLevel(level);
     analytics.logEvent(EVENTS.FONT_SIZE_CHANGED, { level });
   };
 
   const handleThemeChange = async (mode: ThemeMode) => {
+    play('tap');
     await setThemeMode(mode);
     analytics.logEvent(EVENTS.DARK_MODE_TOGGLED, { enabled: mode === 'dark' });
   };
@@ -171,28 +174,6 @@ export function SettingsScreen() {
           />
           {notificationsEnabled && (
             <SettingRow label="알림 시간" value="오전 10:00" />
-          )}
-        </Section>
-
-        {/* 프리미엄 */}
-        <Section title="트롯통 PLUS">
-          {isPremium ? (
-            <SettingRow label="✨ PLUS 구독 중" value="광고 없음 · 무제한 보관" />
-          ) : (
-            <>
-              <SettingRow label="월간 구독" value="2,900원 / 월" onPress={() => {
-                Alert.alert('트롯통 PLUS', '광고 없이 무제한으로 즐기세요!\n\n• 모든 광고 제거\n• 무제한 보관함\n• 최근 기록 200개\n\n월 2,900원 · 연 19,900원', [
-                  { text: '취소', style: 'cancel' },
-                  { text: '구독하기', onPress: () => Alert.alert('준비 중', '곧 출시됩니다!') },
-                ]);
-              }} />
-              <SettingRow label="연간 구독" value="19,900원 / 년 (43% 할인)" onPress={() => {
-                Alert.alert('트롯통 PLUS 연간', '연 19,900원으로 1년 내내 광고 없이!', [
-                  { text: '취소', style: 'cancel' },
-                  { text: '구독하기', onPress: () => Alert.alert('준비 중', '곧 출시됩니다!') },
-                ]);
-              }} />
-            </>
           )}
         </Section>
 

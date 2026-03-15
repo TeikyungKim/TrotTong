@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, Alert, TouchableOpacity, Platform,
+  View, Text, ScrollView, StyleSheet, TouchableOpacity, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
@@ -16,6 +16,7 @@ import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
 import { usePlayerStore } from '../store/playerStore';
 import { useHistory } from '../hooks/useHistory';
+import { useSound } from '../hooks/useSound';
 import { PlayerControls } from '../components/player/PlayerControls';
 import { getFontSize } from '../constants/fonts';
 import { analytics, EVENTS } from '../services/analytics';
@@ -26,12 +27,14 @@ type RouteType = RouteProp<RootStackParamList, 'Player'>;
 export function PlayerScreen() {
   const navigation = useNavigation();
   const route = useRoute<RouteType>();
-  const { video, playlist } = route.params;
+  const { video, playlist, title: screenTitle } = route.params;
 
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
   const { currentVideo, setVideo, isRadioMode } = usePlayerStore();
   const { addToHistory } = useHistory();
+  const { play } = useSound();
+  const prevVideoIdRef = useRef<string | null>(null);
 
   // 라디오 모드: 화면 꺼짐 방지
   useKeepAwake();
@@ -44,28 +47,35 @@ export function PlayerScreen() {
       video_id: video.id,
       singer_name: video.singerName,
     });
+    prevVideoIdRef.current = video.id;
   }, [video.id]);
+
+  // 다음/이전 곡 변경 시 기록 추가
+  useEffect(() => {
+    if (currentVideo && currentVideo.id !== prevVideoIdRef.current) {
+      addToHistory(currentVideo);
+      analytics.logEvent(EVENTS.VIDEO_PLAYED, {
+        video_id: currentVideo.id,
+        singer_name: currentVideo.singerName,
+      });
+      prevVideoIdRef.current = currentVideo.id;
+    }
+  }, [currentVideo?.id, addToHistory]);
 
   const displayVideo = currentVideo ?? video;
 
-  const handleFavoriteLimitReached = useCallback(() => {
-    Alert.alert(
-      '보관함 가득참',
-      `무료 보관함은 최대 20개입니다.\n\n광고를 보면 10개를 추가할 수 있어요!`,
-      [
-        { text: '취소', style: 'cancel' },
-        { text: '광고 보고 추가하기', onPress: () => {} },
-      ]
-    );
-  }, []);
+  const handleBack = useCallback(() => {
+    play('navigation');
+    navigation.goBack();
+  }, [navigation, play]);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       {/* 상단 뒤로가기 */}
       <View style={[styles.topBar, { borderBottomColor: colors.border }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
+        <TouchableOpacity onPress={handleBack} style={styles.backBtn} activeOpacity={0.7}>
           <Text style={[styles.backText, { color: colors.accent, fontSize: getFontSize('body', fontLevel) }]}>
-            ← 뒤로
+            ← {screenTitle ? screenTitle : '뒤로'}
           </Text>
         </TouchableOpacity>
         {isRadioMode && (
@@ -111,7 +121,7 @@ export function PlayerScreen() {
         </View>
 
         {/* 컨트롤 */}
-        <PlayerControls onFavoriteLimitReached={handleFavoriteLimitReached} />
+        <PlayerControls />
       </ScrollView>
     </SafeAreaView>
   );

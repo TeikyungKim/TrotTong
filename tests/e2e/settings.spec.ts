@@ -38,10 +38,6 @@ test.describe('설정 화면', () => {
     await expect(page.getByText('알림').first()).toBeVisible();
   });
 
-  test('트롯통 PLUS 섹션이 있다', async ({ page }) => {
-    await expect(page.getByText('트롯통 PLUS').first()).toBeVisible();
-  });
-
   test('가족에게 공유 버튼이 있다', async ({ page }) => {
     await expect(page.getByText(/가족에게/).first()).toBeVisible();
   });

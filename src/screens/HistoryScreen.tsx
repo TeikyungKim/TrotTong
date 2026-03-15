@@ -9,6 +9,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
 import { useHistory } from '../hooks/useHistory';
+import { useSound } from '../hooks/useSound';
 import { VideoCard } from '../components/ui/VideoCard';
 import { AdBanner } from '../components/ui/AdBanner';
 import { getFontSize } from '../constants/fonts';
@@ -31,12 +32,13 @@ export function HistoryScreen() {
   const navigation = useNavigation<Nav>();
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
-  const isPremium = useUserStore(s => s.prefs.isPremium);
   const { history, removeFromHistory, clearHistory, groupedHistory } = useHistory();
+  const { play } = useSound();
 
   const groups = groupedHistory();
 
   const handleVideoPress = (item: HistoryItem) => {
+    play('tap');
     navigation.navigate('Player', { video: item });
   };
 
@@ -65,14 +67,6 @@ export function HistoryScreen() {
           </TouchableOpacity>
         )}
       </View>
-
-      {!isPremium && (
-        <View style={[styles.limitBar, { backgroundColor: colors.surfaceElevated }]}>
-          <Text style={[styles.limitText, { color: colors.textMuted, fontSize: getFontSize('caption', fontLevel) }]}>
-            최근 30개 기록 보관 중 · PLUS에서 200개
-          </Text>
-        </View>
-      )}
 
       {history.length === 0 ? (
         <View style={styles.empty}>

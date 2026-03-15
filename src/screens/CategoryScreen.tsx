@@ -1,18 +1,18 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
-import { VideoCard } from '../components/ui/VideoCard';
+import { useSound } from '../hooks/useSound';
 import { CATEGORIES } from '../data/categories';
 import { PLAYLISTS } from '../data/playlists';
 import { getPlaylistVideos, getCategoryVideos } from '../services/youtube';
-import { getFontSize, BUTTON_HEIGHT } from '../constants/fonts';
-import type { RootStackParamList, Video } from '../types';
+import { getFontSize } from '../constants/fonts';
+import type { RootStackParamList } from '../types';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -20,42 +20,33 @@ export function CategoryScreen() {
   const navigation = useNavigation<Nav>();
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { play } = useSound();
 
-  const handleCategoryPress = useCallback(async (categoryId: string) => {
-    setSelectedPlaylistId(null);
-    setSelectedCategoryId(categoryId);
-    setLoading(true);
+  const handleCategoryPress = useCallback((categoryId: string) => {
+    play('select');
     const category = CATEGORIES.find(c => c.id === categoryId);
     if (category) {
-      const vids = await getCategoryVideos(category.featuredVideoIds);
-      setVideos(vids);
+      const videos = getCategoryVideos(category.featuredVideoIds);
+      if (videos.length === 0) {
+        Alert.alert('알림', '영상을 불러올 수 없어요. 잠시 후 다시 시도해 주세요.');
+        return;
+      }
+      navigation.navigate('Player', { video: videos[0], playlist: videos, title: category.name });
     }
-    setLoading(false);
-  }, []);
+  }, [navigation, play]);
 
-  const handlePlaylistPress = useCallback(async (playlistId: string) => {
-    setSelectedCategoryId(null);
-    setSelectedPlaylistId(playlistId);
-    setLoading(true);
+  const handlePlaylistPress = useCallback((playlistId: string) => {
+    play('select');
     const playlist = PLAYLISTS.find(p => p.id === playlistId);
     if (playlist) {
-      const vids = await getPlaylistVideos(playlist.videoIds);
-      setVideos(vids);
+      const videos = getPlaylistVideos(playlist.videoIds);
+      if (videos.length === 0) {
+        Alert.alert('알림', '영상을 불러올 수 없어요. 잠시 후 다시 시도해 주세요.');
+        return;
+      }
+      navigation.navigate('Player', { video: videos[0], playlist: videos, title: playlist.name });
     }
-    setLoading(false);
-  }, []);
-
-  const handleVideoPress = (video: Video) => {
-    navigation.navigate('Player', { video, playlist: videos });
-  };
-
-  const selectedCategory = CATEGORIES.find(c => c.id === selectedCategoryId);
-  const selectedPlaylist = PLAYLISTS.find(p => p.id === selectedPlaylistId);
-  const pageTitle = selectedCategory?.name ?? selectedPlaylist?.name ?? null;
+  }, [navigation, play]);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]} edges={['top', 'left', 'right']}>
@@ -78,19 +69,19 @@ export function CategoryScreen() {
                 style={[
                   styles.categoryCard,
                   {
-                    backgroundColor: selectedCategoryId === cat.id ? cat.color : colors.surface,
+                    backgroundColor: colors.surface,
                     borderColor: cat.color,
                     shadowColor: cat.color,
                   },
                 ]}
                 onPress={() => handleCategoryPress(cat.id)}
-                activeOpacity={0.8}
+                activeOpacity={0.75}
               >
                 <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
                 <Text style={[
                   styles.categoryName,
                   {
-                    color: selectedCategoryId === cat.id ? '#FFF' : colors.textPrimary,
+                    color: colors.textPrimary,
                     fontSize: getFontSize('body', fontLevel),
                   },
                 ]}>
@@ -98,9 +89,12 @@ export function CategoryScreen() {
                 </Text>
                 <Text style={[
                   styles.categoryDesc,
-                  { color: selectedCategoryId === cat.id ? 'rgba(255,255,255,0.8)' : colors.textMuted },
+                  { color: colors.textMuted },
                 ]} numberOfLines={1}>
                   {cat.description}
+                </Text>
+                <Text style={[styles.songCount, { color: cat.color }]}>
+                  {cat.featuredVideoIds.length}곡 ▶
                 </Text>
               </TouchableOpacity>
             ))}
@@ -118,12 +112,12 @@ export function CategoryScreen() {
               style={[
                 styles.playlistRow,
                 {
-                  backgroundColor: selectedPlaylistId === playlist.id ? colors.accentGold + '22' : colors.surface,
-                  borderColor: selectedPlaylistId === playlist.id ? colors.accentGold : colors.border,
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
                 },
               ]}
               onPress={() => handlePlaylistPress(playlist.id)}
-              activeOpacity={0.8}
+              activeOpacity={0.75}
             >
               <Text style={styles.playlistEmoji}>{playlist.emoji}</Text>
               <View style={{ flex: 1 }}>
@@ -134,22 +128,10 @@ export function CategoryScreen() {
                   {playlist.description} · {playlist.videoIds.length}곡
                 </Text>
               </View>
-              <Text style={[styles.arrow, { color: colors.textMuted }]}>▶</Text>
+              <Text style={[styles.arrow, { color: colors.accent }]}>▶</Text>
             </TouchableOpacity>
           ))}
         </View>
-
-        {/* 선택된 카테고리/플레이리스트 영상 목록 */}
-        {(selectedCategoryId || selectedPlaylistId) && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textPrimary, fontSize: getFontSize('title', fontLevel) }]}>
-              {pageTitle} {loading ? '불러오는 중...' : `(${videos.length}곡)`}
-            </Text>
-            {videos.map(video => (
-              <VideoCard key={video.id} video={video} onPress={handleVideoPress} />
-            ))}
-          </View>
-        )}
 
         <View style={{ height: 30 }} />
       </ScrollView>
@@ -191,6 +173,7 @@ const styles = StyleSheet.create({
   categoryEmoji: { fontSize: 28 },
   categoryName: { fontWeight: '700' },
   categoryDesc: { fontSize: 11 },
+  songCount: { fontSize: 12, fontWeight: '600', marginTop: 2 },
   playlistRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -208,5 +191,5 @@ const styles = StyleSheet.create({
   playlistEmoji: { fontSize: 28 },
   playlistName: { fontWeight: '600', marginBottom: 2 },
   playlistDesc: { fontSize: 12 },
-  arrow: { fontSize: 14 },
+  arrow: { fontSize: 16, fontWeight: '700' },
 });

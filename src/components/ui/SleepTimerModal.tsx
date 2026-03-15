@@ -5,6 +5,7 @@ import {
 import { useSleepTimer } from '../../hooks/useSleepTimer';
 import { useTheme } from '../../hooks/useTheme';
 import { useUserStore } from '../../store/userStore';
+import { useSound } from '../../hooks/useSound';
 import { getFontSize, BUTTON_HEIGHT } from '../../constants/fonts';
 
 const TIMER_PRESETS = [
@@ -23,6 +24,7 @@ export function SleepTimerModal({ visible, onClose }: Props) {
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
   const { isActive, formattedRemaining, startTimer, cancelTimer, loadLastDuration } = useSleepTimer();
+  const { play } = useSound();
 
   useEffect(() => {
     if (visible) loadLastDuration();
@@ -73,7 +75,7 @@ export function SleepTimerModal({ visible, onClose }: Props) {
                   styles.presetBtn,
                   { borderColor: colors.accent, backgroundColor: colors.surface },
                 ]}
-                onPress={() => { startTimer(preset.minutes); onClose(); }}
+                onPress={() => { play('timer'); startTimer(preset.minutes); onClose(); }}
                 activeOpacity={0.75}
               >
                 <Text style={[styles.presetText, { color: colors.accent, fontSize: getFontSize('title', fontLevel) }]}>
@@ -87,7 +89,7 @@ export function SleepTimerModal({ visible, onClose }: Props) {
           {isActive && (
             <TouchableOpacity
               style={[styles.cancelBtn, { borderColor: colors.border }]}
-              onPress={() => { cancelTimer(); onClose(); }}
+              onPress={() => { play('tap'); cancelTimer(); onClose(); }}
               activeOpacity={0.75}
             >
               <Text style={[styles.cancelText, { color: colors.textSecondary, fontSize: getFontSize('body', fontLevel) }]}>
