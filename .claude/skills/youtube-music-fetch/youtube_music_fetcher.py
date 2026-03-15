@@ -173,9 +173,15 @@ def search_music_videos(youtube, query: str, max_results: int = 20, no_filter: b
         videos = filter_by_title(videos)
         print(f"  제목 필터 후: {len(videos)}건")
 
+    # 아티스트명 관련성 필터 (검색어에서 아티스트명 추출)
+    artist_name = _extract_artist_name(query)
+    if artist_name:
+        videos = filter_by_relevance(videos, artist_name)
+        print(f"  관련성 필터 후: {len(videos)}건")
+
     if videos:
         videos = filter_by_duration(youtube, videos)
-        print(f"  길이 필터 후: {len(videos)}건")
+        print(f"  길이+가용성 필터 후: {len(videos)}건")
 
     # 결과가 0건이면 필터 완화 제안
     if not videos:
@@ -248,29 +254,102 @@ def filter_by_title(videos: list[dict]) -> list[dict]:
     return filtered
 
 
+def _extract_artist_name(query: str) -> str:
+    """검색어에서 한글 아티스트명을 추출합니다.
+    예: '남진 여자의 마음 노래' → '남진'
+    """
+    # 첫 번째 한글 단어를 아티스트명으로 간주
+    match = re.match(r"([가-힣]+)", query.strip())
+    return match.group(1) if match else ""
+
+
+def filter_by_relevance(videos: list[dict], artist_name: str) -> list[dict]:
+    """제목 또는 채널명에 아티스트명이 포함된 영상만 통과시킵니다.
+    이를 통해 검색어와 무관한 영상(다른 가수, 다른 장르)을 제거합니다.
+    """
+    if not artist_name:
+        return videos
+
+    filtered = []
+    for video in videos:
+        title = video["title"]
+        channel = video["channel"]
+        # 제목이나 채널에 아티스트명 포함
+        if artist_name in title or artist_name in channel:
+            filtered.append(video)
+
+    # 관련성 필터가 너무 엄격해서 결과가 없으면 원본 반환
+    if not filtered:
+        print(f"  주의: '{artist_name}' 관련성 필터 결과 0건 — 필터 건너뜀")
+        return videos
+
+    return filtered
+
+
+def filter_by_availability(youtube, videos: list[dict]) -> list[dict]:
+    """비디오가 공개 상태이고, 삽입(embed) 가능한지 검증합니다.
+    삭제/비공개/삽입 불가 영상을 제거합니다.
+    """
+    if not videos:
+        return []
+
+    video_ids = [v["id"] for v in videos]
+    available_ids: set[str] = set()
+
+    for i in range(0, len(video_ids), 50):
+        chunk = video_ids[i:i + 50]
+        request = youtube.videos().list(
+            part="status",
+            id=",".join(chunk),
+        )
+        response = _execute_with_retry(request, "가용성 검증 API")
+
+        for item in response.get("items", []):
+            status = item.get("status", {})
+            # 공개 + 삽입 가능만 허용
+            if (status.get("privacyStatus") == "public"
+                    and status.get("embeddable", False)):
+                available_ids.add(item["id"])
+
+    return [v for v in videos if v["id"] in available_ids]
+
+
 def filter_by_duration(youtube, videos: list[dict]) -> list[dict]:
-    """영상 길이 기반으로 필터링합니다 (1분30초 ~ 10분)."""
+    """영상 길이 기반으로 필터링합니다 (1분30초 ~ 10분).
+    동시에 status도 조회하여 공개/삽입 가능 여부도 함께 검증합니다.
+    """
     if not videos:
         return []
 
     video_ids = [v["id"] for v in videos]
 
-    # 50개씩 나눠서 조회 (API 제한)
+    # contentDetails + status를 한 번에 조회 (API 쿼터 절약)
     duration_map: dict[str, str] = {}
+    available_ids: set[str] = set()
+
     for i in range(0, len(video_ids), 50):
         chunk = video_ids[i:i + 50]
         request = youtube.videos().list(
-            part="contentDetails",
+            part="contentDetails,status",
             id=",".join(chunk),
         )
         response = _execute_with_retry(request, "영상 상세정보 API")
 
         for item in response.get("items", []):
-            duration_map[item["id"]] = item["contentDetails"]["duration"]
+            vid = item["id"]
+            duration_map[vid] = item["contentDetails"]["duration"]
+            status = item.get("status", {})
+            if (status.get("privacyStatus") == "public"
+                    and status.get("embeddable", False)):
+                available_ids.add(vid)
 
     filtered = []
     for video in videos:
-        duration = duration_map.get(video["id"], "")
+        vid = video["id"]
+        # 삭제/비공개/삽입 불가 영상 제외
+        if vid not in available_ids:
+            continue
+        duration = duration_map.get(vid, "")
         if not duration:
             continue
         seconds = parse_duration_to_seconds(duration)

@@ -31,13 +31,36 @@ export function PlayerScreen() {
 
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
-  const { currentVideo, setVideo, isRadioMode } = usePlayerStore();
+  const { currentVideo, setVideo, nextVideo, isRadioMode } = usePlayerStore();
   const { addToHistory } = useHistory();
   const { play } = useSound();
   const prevVideoIdRef = useRef<string | null>(null);
 
+  // 한 곡이 끝나면 자동으로 다음 곡 재생
+  const handleVideoEnd = useCallback(() => {
+    nextVideo();
+  }, [nextVideo]);
+
   // 라디오 모드: 화면 꺼짐 방지
   useKeepAwake();
+
+  // 웹: YouTube IFrame API postMessage로 영상 종료 감지
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const handler = (event: MessageEvent) => {
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        // YouTube IFrame API: info.playerState === 0 means ended
+        if (data?.event === 'onStateChange' && data?.info === 0) {
+          handleVideoEnd();
+        }
+      } catch {
+        // non-JSON messages — ignore
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [handleVideoEnd]);
 
   // 화면 진입 시 플레이어 초기화
   useEffect(() => {
@@ -91,7 +114,7 @@ export function PlayerScreen() {
           {Platform.OS === 'web' ? (
             <WebView
               key={displayVideo.id}
-              source={{ uri: `https://www.youtube.com/embed/${displayVideo.id}?playsinline=1&rel=0` }}
+              source={{ uri: `https://www.youtube.com/embed/${displayVideo.id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1` }}
               style={{ height: 220 }}
               allowsInlineMediaPlayback
               allowsFullscreenVideo
@@ -102,6 +125,9 @@ export function PlayerScreen() {
               height={220}
               videoId={displayVideo.id}
               play={true}
+              onChangeState={(state: string) => {
+                if (state === 'ended') handleVideoEnd();
+              }}
               onError={(e: string) => console.log('YouTube Error:', e)}
             />
           )}
