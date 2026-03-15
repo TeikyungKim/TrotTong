@@ -113,8 +113,8 @@ test.describe('시니어 UX 원칙 검증', () => {
     await page.getByText('설정').first().click();
     await page.waitForTimeout(400);
 
-    // 크게 버튼 클릭
-    const largeBtn = page.getByText('크게').first();
+    // 아주 크게 버튼 클릭 (xlarge — 기본값과 같거나 커짐)
+    const largeBtn = page.getByText('아주 크게').first();
     if (await largeBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await largeBtn.click();
       await page.waitForTimeout(300);

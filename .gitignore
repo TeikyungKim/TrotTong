@@ -47,3 +47,6 @@ yarn-error.*
 
 # TypeScript
 *.tsbuildinfo
+test-results/.last-run.json
+.claude/settings.json
+.claude/settings.json.tmp

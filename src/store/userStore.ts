@@ -4,7 +4,7 @@ import { APP_CONFIG } from '../constants/config';
 import type { UserPreferences, StreakData, FontLevel, ThemeMode } from '../types';
 
 const DEFAULT_PREFS: UserPreferences = {
-  fontLevel: 'normal',
+  fontLevel: 'xlarge',
   themeMode: 'auto',
   notificationsEnabled: false,
   notificationTime: '10:00',

@@ -1,10 +1,16 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, SafeAreaView, Alert, TouchableOpacity,
+  View, Text, ScrollView, StyleSheet, SafeAreaView, Alert, TouchableOpacity, Platform,
 } from 'react-native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useKeepAwake } from 'expo-keep-awake';
+
+// 웹: react-native-web-webview (iframe 렌더링)
+// 네이티브: react-native-webview (WebView)
+const WebView: React.ComponentType<any> = Platform.OS === 'web'
+  ? (require('react-native-web-webview') as { default: React.ComponentType<any> }).default
+  : (require('react-native-webview') as { WebView: React.ComponentType<any> }).WebView;
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
 import { usePlayerStore } from '../store/playerStore';
@@ -71,13 +77,23 @@ export function PlayerScreen() {
       <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
         {/* YouTube 플레이어 */}
         <View style={styles.playerContainer}>
-          <YoutubeIframe
-            key={displayVideo.id}
-            height={220}
-            videoId={displayVideo.id}
-            play={true}
-            onError={(e: string) => console.log('YouTube Error:', e)}
-          />
+          {Platform.OS === 'web' ? (
+            <WebView
+              key={displayVideo.id}
+              source={{ uri: `https://www.youtube.com/embed/${displayVideo.id}?playsinline=1&rel=0` }}
+              style={{ height: 220 }}
+              allowsInlineMediaPlayback
+              allowsFullscreenVideo
+            />
+          ) : (
+            <YoutubeIframe
+              key={displayVideo.id}
+              height={220}
+              videoId={displayVideo.id}
+              play={true}
+              onError={(e: string) => console.log('YouTube Error:', e)}
+            />
+          )}
         </View>
 
         {/* 영상 정보 */}

@@ -17,6 +17,12 @@ export function VideoCard({ video, onPress, rightAction, showSinger = true, time
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
 
+  console.log('[VideoCard] 렌더링:', {
+    id: video.id,
+    title: video.title,
+    thumbnailUrl: video.thumbnailUrl,
+  });
+
   return (
     <TouchableOpacity
       style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
@@ -27,6 +33,8 @@ export function VideoCard({ video, onPress, rightAction, showSinger = true, time
         source={{ uri: video.thumbnailUrl }}
         style={styles.thumbnail}
         resizeMode="cover"
+        onError={(e) => console.warn('[VideoCard] 썸네일 로드 실패:', video.thumbnailUrl, e.nativeEvent)}
+        onLoad={() => console.log('[VideoCard] 썸네일 로드 성공:', video.thumbnailUrl)}
       />
       <View style={styles.content}>
         <Text

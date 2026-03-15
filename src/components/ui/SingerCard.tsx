@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableOpacity, View, Text, Image, StyleSheet, Dimensions,
 } from 'react-native';
 import { useTheme } from '../../hooks/useTheme';
 import { useUserStore } from '../../store/userStore';
 import { getFontSize } from '../../constants/fonts';
+import { getSingerThumbnail } from '../../services/youtube';
 import type { Singer } from '../../types';
 
 const { width } = Dimensions.get('window');
@@ -31,6 +32,21 @@ interface Props {
 export function SingerCard({ singer, onPress, isRecommended }: Props) {
   const { colors } = useTheme();
   const fontLevel = useUserStore(s => s.prefs.fontLevel);
+  const [thumbnailUri, setThumbnailUri] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getSingerThumbnail(singer.id).then(uri => {
+      console.log('[SingerCard] 썸네일 결과:', { singerId: singer.id, name: singer.name, uri });
+      if (!cancelled) setThumbnailUri(uri);
+    }).catch(err => {
+      console.error('[SingerCard] 썸네일 에러:', singer.id, err);
+    });
+    return () => { cancelled = true; };
+  }, [singer.id]);
+
+  const showFallback = !thumbnailUri || imageError;
 
   return (
     <TouchableOpacity
@@ -40,11 +56,19 @@ export function SingerCard({ singer, onPress, isRecommended }: Props) {
     >
       {/* 썸네일 영역 */}
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: `https://img.youtube.com/vi/${singer.featuredVideoIds[0]}/hqdefault.jpg` }}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        {showFallback ? (
+          <View style={[styles.image, styles.imageFallback, { backgroundColor: TIER_BADGE_COLOR[singer.tier] + '22' }]}>
+            <Text style={{ fontSize: 40 }}>🎤</Text>
+            <Text style={{ color: TIER_BADGE_COLOR[singer.tier], fontSize: 14, marginTop: 4, fontWeight: '700' }}>{singer.name}</Text>
+          </View>
+        ) : (
+          <Image
+            source={{ uri: thumbnailUri! }}
+            style={styles.image}
+            resizeMode="cover"
+            onError={() => setImageError(true)}
+          />
+        )}
         {/* 티어 뱃지 */}
         <View style={[styles.badge, { backgroundColor: TIER_BADGE_COLOR[singer.tier] }]}>
           <Text style={styles.badgeText}>{TIER_BADGE[singer.tier]}</Text>
@@ -96,6 +120,10 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
+  },
+  imageFallback: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   badge: {
     position: 'absolute',
