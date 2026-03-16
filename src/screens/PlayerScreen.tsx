@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity, Platform,
 } from 'react-native';
@@ -7,11 +7,6 @@ import { useNavigation, useRoute, type RouteProp } from '@react-navigation/nativ
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useKeepAwake } from 'expo-keep-awake';
 
-// 웹: react-native-web-webview (iframe 렌더링)
-// 네이티브: react-native-webview (WebView)
-const WebView: React.ComponentType<any> = Platform.OS === 'web'
-  ? (require('react-native-web-webview') as { default: React.ComponentType<any> }).default
-  : (require('react-native-webview') as { WebView: React.ComponentType<any> }).WebView;
 import { useTheme } from '../hooks/useTheme';
 import { useUserStore } from '../store/userStore';
 import { usePlayerStore } from '../store/playerStore';
@@ -21,6 +16,40 @@ import { PlayerControls } from '../components/player/PlayerControls';
 import { getFontSize } from '../constants/fonts';
 import { analytics, EVENTS } from '../services/analytics';
 import type { RootStackParamList } from '../types';
+
+// 웹 전용: HTML iframe 엘리먼트 (React Native Web은 React DOM 기반이므로 직접 사용 가능)
+const HtmlIFrame = ('iframe' as unknown) as React.ComponentType<Record<string, unknown>>;
+
+/** 웹용 YouTube IFrame API 기반 플레이어 HTML — 자동재생 + 영상 종료 이벤트 전달 */
+function getYouTubePlayerHTML(videoId: string): string {
+  return `<!DOCTYPE html>
+<html><head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>*{margin:0;padding:0;overflow:hidden}html,body,#player{width:100%;height:100%;background:#000}</style>
+</head><body>
+<div id="player"></div>
+<script>
+var tag=document.createElement('script');
+tag.src='https://www.youtube.com/iframe_api';
+var f=document.getElementsByTagName('script')[0];
+f.parentNode.insertBefore(tag,f);
+function onYouTubeIframeAPIReady(){
+  new YT.Player('player',{
+    videoId:'${videoId}',
+    width:'100%',
+    height:'100%',
+    playerVars:{autoplay:1,rel:0,playsinline:1,modestbranding:1,controls:1},
+    events:{
+      onReady:function(e){e.target.playVideo();},
+      onStateChange:function(e){
+        window.parent.postMessage(JSON.stringify({event:'onStateChange',info:e.data}),'*');
+      }
+    }
+  });
+}
+</script>
+</body></html>`;
+}
 
 type RouteType = RouteProp<RootStackParamList, 'Player'>;
 
@@ -36,10 +65,56 @@ export function PlayerScreen() {
   const { play } = useSound();
   const prevVideoIdRef = useRef<string | null>(null);
 
+  // === Android 자동재생 핵심 로직 ===
+  // 원리: react-native-youtube-iframe은 play prop이 false→true로 변할 때 playVideo()를 호출.
+  //       videoId가 바뀔 때 play=true면 loadVideoById()를 호출(자동재생).
+  //       Android WebView의 autoplay 정책 우회를 위해 webViewProps 설정 필수.
+  const [shouldPlay, setShouldPlay] = useState(false);
+  const playTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const playerReadyRef = useRef(false);
+
+  const clearPlayTimer = useCallback(() => {
+    if (playTimerRef.current) {
+      clearTimeout(playTimerRef.current);
+      playTimerRef.current = null;
+    }
+  }, []);
+
   // 한 곡이 끝나면 자동으로 다음 곡 재생
   const handleVideoEnd = useCallback(() => {
     nextVideo();
   }, [nextVideo]);
+
+  // 플레이어 WebView 초기화 완료 — 첫 영상 자동재생
+  const handlePlayerReady = useCallback(() => {
+    playerReadyRef.current = true;
+    clearPlayTimer();
+    // Android: false→true 토글로 playVideo() 확실히 호출
+    setShouldPlay(false);
+    playTimerRef.current = setTimeout(() => setShouldPlay(true), 200);
+  }, [clearPlayTimer]);
+
+  // 비디오 전환 시 (next/prev/곡끝남) 자동재생 보장
+  const displayVideo = currentVideo ?? video;
+  useEffect(() => {
+    // 첫 마운트는 onReady 핸들러에서 처리 (플레이어 초기화 전에는 play 무의미)
+    if (!playerReadyRef.current) return;
+    clearPlayTimer();
+    // false→true 토글: Android에서 loadVideoById만으로 재생 안 될 때 playVideo() 강제 호출
+    setShouldPlay(false);
+    playTimerRef.current = setTimeout(() => setShouldPlay(true), 150);
+    return clearPlayTimer;
+  }, [displayVideo.id, clearPlayTimer]);
+
+  // 플레이어 상태 변화 핸들러
+  const handleStateChange = useCallback((state: string) => {
+    if (state === 'ended') {
+      handleVideoEnd();
+    }
+  }, [handleVideoEnd]);
+
+  // cleanup on unmount
+  useEffect(() => clearPlayTimer, [clearPlayTimer]);
 
   // 라디오 모드: 화면 꺼짐 방지
   useKeepAwake();
@@ -85,8 +160,6 @@ export function PlayerScreen() {
     }
   }, [currentVideo?.id, addToHistory]);
 
-  const displayVideo = currentVideo ?? video;
-
   const handleBack = useCallback(() => {
     play('navigation');
     navigation.goBack();
@@ -112,22 +185,30 @@ export function PlayerScreen() {
         {/* YouTube 플레이어 */}
         <View style={styles.playerContainer}>
           {Platform.OS === 'web' ? (
-            <WebView
+            <HtmlIFrame
               key={displayVideo.id}
-              source={{ uri: `https://www.youtube.com/embed/${displayVideo.id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1` }}
-              style={{ height: 220 }}
-              allowsInlineMediaPlayback
-              allowsFullscreenVideo
+              srcDoc={getYouTubePlayerHTML(displayVideo.id)}
+              style={{ width: '100%', height: 220, border: 'none' }}
+              allow="autoplay; encrypted-media; fullscreen"
+              allowFullScreen
             />
           ) : (
             <YoutubeIframe
-              key={displayVideo.id}
               height={220}
               videoId={displayVideo.id}
-              play={true}
-              onChangeState={(state: string) => {
-                if (state === 'ended') handleVideoEnd();
+              play={shouldPlay}
+              forceAndroidAutoplay={true}
+              initialPlayerParams={{
+                preventFullScreen: false,
+                modestbranding: true,
+                rel: false,
               }}
+              webViewProps={{
+                mediaPlaybackRequiresUserAction: false,
+                allowsInlineMediaPlayback: true,
+              }}
+              onReady={handlePlayerReady}
+              onChangeState={handleStateChange}
               onError={(e: string) => console.log('YouTube Error:', e)}
             />
           )}

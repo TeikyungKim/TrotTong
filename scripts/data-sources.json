@@ -25,12 +25,12 @@
     { "id": "ballad", "searchQuery": "트로트 발라드 명곡" },
     { "id": "upbeat", "searchQuery": "신나는 트로트 최신" },
     { "id": "classic", "searchQuery": "70년대 80년대 트로트 명곡" },
-    { "id": "latest", "searchQuery": "2024 최신 트로트" },
+    { "id": "latest", "searchQuery": "2026 최신 트로트" },
     { "id": "bedtime", "searchQuery": "잠들기 좋은 트로트 발라드" },
     { "id": "morning", "searchQuery": "아침 신나는 트로트" }
   ],
   "playlists": [
-    { "id": "top10-this-week", "searchQuery": "2024 트로트 인기 TOP 10" },
+    { "id": "top10-this-week", "searchQuery": "2026 트로트 인기 TOP 10" },
     { "id": "bedtime", "searchQuery": "잠자리 트로트 발라드 모음" },
     { "id": "drive", "searchQuery": "드라이브 신나는 트로트" },
     { "id": "morning", "searchQuery": "아침 트로트 경쾌한" },

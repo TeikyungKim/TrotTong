@@ -8,7 +8,7 @@ import { useTheme } from '../../hooks/useTheme';
 // import { AD_UNIT_IDS } from '../../services/admob';
 
 interface Props {
-  screen: 'home' | 'favorite' | 'history';
+  screen: 'home' | 'favorite' | 'history' | 'category';
 }
 
 export function AdBanner({ screen }: Props) {

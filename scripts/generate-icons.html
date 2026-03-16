@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; background: #000; display: flex; gap: 20px; padding: 20px; flex-wrap: wrap; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="icon" width="1024" height="1024"></canvas>
+<canvas id="adaptive" width="1024" height="1024"></canvas>
+<canvas id="favicon" width="48" height="48"></canvas>
+<canvas id="splash" width="1284" height="2778"></canvas>
+
+<script>
+function drawIcon(ctx, size, opts = {}) {
+  const { noBackground, splashMode } = opts;
+  const s = size / 1024; // scale factor
+
+  if (!noBackground) {
+    // 배경: 깊은 빨강 그라데이션 (한국 전통색)
+    const bgGrad = ctx.createRadialGradient(
+      size * 0.4, size * 0.3, 0,
+      size * 0.5, size * 0.5, size * 0.7
+    );
+    bgGrad.addColorStop(0, '#D4342A');
+    bgGrad.addColorStop(0.5, '#B8291F');
+    bgGrad.addColorStop(1, '#8B1A12');
+    ctx.fillStyle = bgGrad;
+
+    if (splashMode) {
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    } else {
+      // 둥근 모서리 (앱 아이콘 규격)
+      const r = size * 0.22;
+      ctx.beginPath();
+      ctx.moveTo(r, 0);
+      ctx.lineTo(size - r, 0);
+      ctx.quadraticCurveTo(size, 0, size, r);
+      ctx.lineTo(size, size - r);
+      ctx.quadraticCurveTo(size, size, size - r, size);
+      ctx.lineTo(r, size);
+      ctx.quadraticCurveTo(0, size, 0, size - r);
+      ctx.lineTo(0, r);
+      ctx.quadraticCurveTo(0, 0, r, 0);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  // 중심점 계산
+  const cx = splashMode ? ctx.canvas.width / 2 : size / 2;
+  const cy = splashMode ? ctx.canvas.height / 2 - 80 * s : size / 2 - 30 * s;
+
+  // 빛나는 원형 배경 (글로우)
+  const glowGrad = ctx.createRadialGradient(cx, cy - 20 * s, 0, cx, cy, 320 * s);
+  glowGrad.addColorStop(0, 'rgba(255,215,0,0.15)');
+  glowGrad.addColorStop(0.6, 'rgba(255,215,0,0.05)');
+  glowGrad.addColorStop(1, 'rgba(255,215,0,0)');
+  ctx.fillStyle = glowGrad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 320 * s, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 음표 마이크 아이콘 (중앙 심볼)
+  // 마이크 헤드
+  ctx.save();
+  const micX = cx;
+  const micY = cy - 60 * s;
+
+  // 마이크 그릴 (둥근 상단)
+  const micGrad = ctx.createLinearGradient(micX - 70 * s, micY - 100 * s, micX + 70 * s, micY + 60 * s);
+  micGrad.addColorStop(0, '#FFD700');
+  micGrad.addColorStop(0.3, '#FFF0A0');
+  micGrad.addColorStop(0.5, '#FFD700');
+  micGrad.addColorStop(1, '#B8860B');
+
+  // 마이크 헤드 (타원)
+  ctx.beginPath();
+  ctx.ellipse(micX, micY - 30 * s, 85 * s, 110 * s, 0, 0, Math.PI * 2);
+  ctx.fillStyle = micGrad;
+  ctx.fill();
+
+  // 마이크 그릴 라인
+  ctx.strokeStyle = 'rgba(139,69,19,0.3)';
+  ctx.lineWidth = 2 * s;
+  for (let i = -3; i <= 3; i++) {
+    const ly = micY - 30 * s + i * 25 * s;
+    const w = Math.sqrt(1 - (i * 25 / 110) ** 2) * 85 * s;
+    if (w > 0) {
+      ctx.beginPath();
+      ctx.moveTo(micX - w, ly);
+      ctx.lineTo(micX + w, ly);
+      ctx.stroke();
+    }
+  }
+
+  // 마이크 스탠드
+  ctx.beginPath();
+  ctx.moveTo(micX, micY + 80 * s);
+  ctx.lineTo(micX, micY + 200 * s);
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 14 * s;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // 마이크 베이스
+  ctx.beginPath();
+  ctx.moveTo(micX - 60 * s, micY + 200 * s);
+  ctx.lineTo(micX + 60 * s, micY + 200 * s);
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 12 * s;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // 마이크 홀더 (U자 곡선)
+  ctx.beginPath();
+  ctx.arc(micX, micY + 60 * s, 65 * s, 0, Math.PI, false);
+  ctx.strokeStyle = '#B8860B';
+  ctx.lineWidth = 8 * s;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  ctx.restore();
+
+  // 음표 장식 (왼쪽 위)
+  drawNote(ctx, cx - 180 * s, cy - 160 * s, 40 * s, 'rgba(255,255,255,0.7)');
+  // 음표 장식 (오른쪽)
+  drawNote(ctx, cx + 170 * s, cy - 100 * s, 30 * s, 'rgba(255,255,255,0.5)');
+  // 작은 음표 (오른쪽 위)
+  drawNote(ctx, cx + 120 * s, cy - 200 * s, 22 * s, 'rgba(255,215,0,0.6)');
+
+  // 별 장식
+  drawStar(ctx, cx - 200 * s, cy + 50 * s, 16 * s, 'rgba(255,215,0,0.8)');
+  drawStar(ctx, cx + 210 * s, cy + 30 * s, 12 * s, 'rgba(255,255,255,0.6)');
+  drawStar(ctx, cx - 140 * s, cy - 220 * s, 10 * s, 'rgba(255,215,0,0.5)');
+
+  // 하단 텍스트: 트롯통
+  const textY = splashMode ? cy + 320 * s : cy + 290 * s;
+  ctx.font = `900 ${88 * s}px -apple-system, "Malgun Gothic", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // 텍스트 그림자
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fillText('트롯통', cx + 3 * s, textY + 3 * s);
+
+  // 텍스트 본체
+  const textGrad = ctx.createLinearGradient(cx - 150 * s, textY - 40 * s, cx + 150 * s, textY + 40 * s);
+  textGrad.addColorStop(0, '#FFFFFF');
+  textGrad.addColorStop(0.5, '#FFF8E1');
+  textGrad.addColorStop(1, '#FFFFFF');
+  ctx.fillStyle = textGrad;
+  ctx.fillText('트롯통', cx, textY);
+
+  // 부제 (스플래시에만)
+  if (splashMode) {
+    ctx.font = `500 ${32 * s}px -apple-system, "Malgun Gothic", sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText('손 하나로 즐기는 트로트 방송', cx, textY + 70 * s);
+  }
+}
+
+function drawNote(ctx, x, y, size, color) {
+  ctx.save();
+  ctx.fillStyle = color;
+  // 음표 머리
+  ctx.beginPath();
+  ctx.ellipse(x, y + size * 0.8, size * 0.6, size * 0.4, -0.3, 0, Math.PI * 2);
+  ctx.fill();
+  // 음표 줄기
+  ctx.beginPath();
+  ctx.moveTo(x + size * 0.5, y + size * 0.6);
+  ctx.lineTo(x + size * 0.5, y - size * 0.8);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = size * 0.15;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+  // 음표 깃발
+  ctx.beginPath();
+  ctx.moveTo(x + size * 0.5, y - size * 0.8);
+  ctx.quadraticCurveTo(x + size * 1.2, y - size * 0.3, x + size * 0.5, y + size * 0.1);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = size * 0.12;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawStar(ctx, x, y, size, color) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+    const px = x + Math.cos(angle) * size;
+    const py = y + Math.sin(angle) * size;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+// 1. 메인 아이콘 (1024x1024)
+const iconCtx = document.getElementById('icon').getContext('2d');
+drawIcon(iconCtx, 1024);
+
+// 2. 어댑티브 아이콘 (1024x1024, 배경 없이 — Android 배경색은 별도)
+const adaptCtx = document.getElementById('adaptive').getContext('2d');
+drawIcon(adaptCtx, 1024, { noBackground: false });
+
+// 3. 파비콘 (48x48)
+const favCtx = document.getElementById('favicon').getContext('2d');
+drawIcon(favCtx, 48);
+
+// 4. 스플래시 (1284x2778)
+const splashCtx = document.getElementById('splash').getContext('2d');
+drawIcon(splashCtx, 1024, { splashMode: true });
+</script>
+</body>
+</html>

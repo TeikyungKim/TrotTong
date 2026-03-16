@@ -12,6 +12,7 @@ import { CATEGORIES } from '../data/categories';
 import { PLAYLISTS } from '../data/playlists';
 import { getPlaylistVideos, getCategoryVideos } from '../services/youtube';
 import { getCategoryVideoIds, getPlaylistVideoIds } from '../services/remoteData';
+import { AdBanner } from '../components/ui/AdBanner';
 import { getFontSize } from '../constants/fonts';
 import type { RootStackParamList } from '../types';
 
@@ -138,6 +139,8 @@ export function CategoryScreen() {
 
         <View style={{ height: 30 }} />
       </ScrollView>
+
+      <AdBanner screen="category" />
     </SafeAreaView>
   );
 }

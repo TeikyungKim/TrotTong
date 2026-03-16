@@ -75,13 +75,53 @@ export function getSingerVideoIds(singerId: string): string[] {
   return singer?.featuredVideoIds ?? [];
 }
 
-/** 카테고리의 비디오 ID 목록 반환 (원격 > 번들 폴백) */
-export function getCategoryVideoIds(categoryId: string): string[] {
-  if (_remoteData?.categories[categoryId]?.length) {
-    return _remoteData.categories[categoryId];
+// 카테고리 → 가수 태그 매핑 (곡 수 부족 시 가수 데이터에서 자동 보충)
+const CATEGORY_TAG_MAP: Record<string, string[]> = {
+  ballad: ['ballad'],
+  upbeat: ['upbeat'],
+  classic: ['classic'],
+  latest: ['latest'],
+  bedtime: ['ballad', 'classic'],
+  morning: ['upbeat', 'latest'],
+};
+
+const TARGET_CATEGORY_SIZE = 15;
+
+/** 가수 태그 기반으로 비디오 ID를 15개까지 자동 보충 */
+function supplementFromSingerTags(existingIds: string[], tags: string[]): string[] {
+  const existing = new Set(existingIds);
+  const result = [...existingIds];
+
+  for (const singer of SINGERS) {
+    if (result.length >= TARGET_CATEGORY_SIZE) break;
+    if (!singer.tags.some(t => tags.includes(t))) continue;
+    for (const vid of singer.featuredVideoIds) {
+      if (result.length >= TARGET_CATEGORY_SIZE) break;
+      if (!existing.has(vid)) {
+        result.push(vid);
+        existing.add(vid);
+      }
+    }
   }
+
+  return result;
+}
+
+/** 카테고리의 비디오 ID 목록 반환 (원격 > 번들 폴백, 부족 시 가수 태그로 자동 보충) */
+export function getCategoryVideoIds(categoryId: string): string[] {
+  const tags = CATEGORY_TAG_MAP[categoryId];
+
+  // 원격 데이터 우선
+  if (_remoteData?.categories[categoryId]?.length) {
+    const remoteIds = _remoteData.categories[categoryId];
+    if (remoteIds.length >= TARGET_CATEGORY_SIZE || !tags) return remoteIds;
+    return supplementFromSingerTags(remoteIds, tags);
+  }
+
+  // 번들 데이터 + 가수 태그 보충
   const category = CATEGORIES.find(c => c.id === categoryId);
-  return category?.featuredVideoIds ?? [];
+  const bundledIds = category?.featuredVideoIds ?? [];
+  return tags ? supplementFromSingerTags(bundledIds, tags) : bundledIds;
 }
 
 /** 플레이리스트의 비디오 ID 목록 반환 (원격 > 번들 폴백) */

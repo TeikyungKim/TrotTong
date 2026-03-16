@@ -71,6 +71,127 @@ npx eas build --platform all
 
 ---
 
+## AdMob 광고 설정
+
+### 개요
+
+앱 하단에 AdMob 배너 광고가 표시됩니다. 개발 중(Expo Go)에는 Mock 배너가 표시되고, EAS Build 시 실제 AdMob 광고로 전환됩니다.
+
+### 배너 광고 적용 화면
+
+| 화면 | 컴포넌트 | 위치 |
+|---|---|---|
+| 홈 (HomeScreen) | `<AdBanner screen="home" />` | 하단 고정 |
+| 보관함 (FavoriteScreen) | `<AdBanner screen="favorite" />` | 하단 고정 |
+| 최근 기록 (HistoryScreen) | `<AdBanner screen="history" />` | 하단 고정 |
+| 카테고리 (CategoryScreen) | `<AdBanner screen="category" />` | 하단 고정 |
+
+> PlayerScreen(재생 화면)에는 배너 광고를 넣지 않습니다 (영상 감상 방해 방지).
+
+### 광고 종류
+
+| 종류 | 설명 | 노출 조건 |
+|---|---|---|
+| **배너 광고** | 화면 하단 고정 320x50 배너 | 프리미엄 유저가 아닌 경우 항상 표시 |
+| **전면 광고** | 가수 선택 3회마다 전체 화면 | 5분 간격 + 세션 시작 1분 후부터 |
+| **보상형 광고** | 즐겨찾기 슬롯 추가, 24시간 광고 제거 | 사용자가 직접 선택 |
+
+### AdMob API 키 설정
+
+#### 1단계: Google AdMob 계정 생성
+
+1. [Google AdMob](https://admob.google.com/) 접속 → 계정 생성
+2. 앱 등록: **앱 추가** → 플랫폼 선택 (Android / iOS)
+3. 앱 ID 확인 (예: `ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX`)
+
+#### 2단계: 광고 단위(Unit) 생성
+
+AdMob 콘솔에서 아래 5개 광고 단위를 생성합니다:
+
+| 광고 단위 | 형식 | 환경변수 키 |
+|---|---|---|
+| 홈 배너 | 배너 | `EXPO_PUBLIC_BANNER_HOME` |
+| 보관함 배너 | 배너 | `EXPO_PUBLIC_BANNER_FAVORITE` |
+| 기록 배너 | 배너 | `EXPO_PUBLIC_BANNER_HISTORY` |
+| 전면 광고 | 전면 | `EXPO_PUBLIC_INTERSTITIAL` |
+| 보상형 광고 | 보상형 | `EXPO_PUBLIC_REWARDED` |
+
+#### 3단계: 환경변수 설정 (로컬 개발)
+
+`.env` 파일에 AdMob 키를 추가합니다:
+
+```bash
+# .env (로컬 개발용 — Git에 포함하지 않음)
+EXPO_PUBLIC_ADMOB_APP_ANDROID=ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX
+EXPO_PUBLIC_ADMOB_APP_IOS=ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX
+EXPO_PUBLIC_BANNER_HOME=ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX
+EXPO_PUBLIC_BANNER_FAVORITE=ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX
+EXPO_PUBLIC_BANNER_HISTORY=ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX
+EXPO_PUBLIC_INTERSTITIAL=ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX
+EXPO_PUBLIC_REWARDED=ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX
+```
+
+> 환경변수 없으면 자동으로 Google 테스트 ID가 사용됩니다 (개발 중 안전).
+
+#### 4단계: EAS Secrets 설정 (프로덕션 빌드)
+
+프로덕션 빌드에서는 EAS Secrets로 키를 관리합니다:
+
+```bash
+# EAS CLI로 시크릿 등록
+eas secret:create --name EXPO_PUBLIC_ADMOB_APP_ANDROID --value "ca-app-pub-..."
+eas secret:create --name EXPO_PUBLIC_ADMOB_APP_IOS --value "ca-app-pub-..."
+eas secret:create --name EXPO_PUBLIC_BANNER_HOME --value "ca-app-pub-..."
+eas secret:create --name EXPO_PUBLIC_BANNER_FAVORITE --value "ca-app-pub-..."
+eas secret:create --name EXPO_PUBLIC_BANNER_HISTORY --value "ca-app-pub-..."
+eas secret:create --name EXPO_PUBLIC_INTERSTITIAL --value "ca-app-pub-..."
+eas secret:create --name EXPO_PUBLIC_REWARDED --value "ca-app-pub-..."
+```
+
+#### 5단계: 네이티브 모듈 설치 (EAS Build 전)
+
+```bash
+# AdMob 네이티브 모듈 설치
+npm install react-native-google-mobile-ads
+
+# app.json plugins에 추가 (또는 app.config.ts 생성)
+# "plugins": [
+#   ["react-native-google-mobile-ads", {
+#     "androidAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX",
+#     "iosAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX"
+#   }]
+# ]
+```
+
+#### 6단계: Mock → 실제 광고 전환
+
+`src/components/ui/AdBanner.tsx`에서 주석 처리된 `BannerAd` import를 해제합니다:
+
+```typescript
+// 주석 해제:
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { AD_UNIT_IDS } from '../../services/admob';
+```
+
+### 관련 파일
+
+| 파일 | 역할 |
+|---|---|
+| `src/components/ui/AdBanner.tsx` | 배너 광고 컴포넌트 (Mock/실제 전환) |
+| `src/services/admob.ts` | 광고 단위 ID + 전면/보상형 광고 함수 |
+| `src/hooks/useAdManager.ts` | 전면 광고 주파수 제어 (3회/5분 간격) |
+| `src/constants/config.ts` | 광고 주파수 설정값 |
+| `src/store/userStore.ts` | 프리미엄/광고 제거 상태 관리 |
+
+### 주의사항
+
+- **Expo Go에서는 AdMob 동작 불가** — 네이티브 모듈 필요, EAS Build 필수
+- **테스트 시 반드시 테스트 ID 사용** — 실제 ID로 테스트하면 AdMob 계정 정지 위험
+- **라디오 모드 중에는 전면 광고 차단** — 사용자 경험 보호
+- **프리미엄 유저에게는 모든 광고 숨김** — `isAdFree()` 체크
+
+---
+
 ## 비디오 ID 자동 갱신 시스템 (GitHub Actions + GitHub Pages)
 
 `src/data/` 폴더의 비디오 ID는 **GitHub Actions + GitHub Pages**를 통해 매일 자동 갱신됩니다.
@@ -155,6 +276,48 @@ GitHub Actions 탭 > Refresh Video IDs > **Run workflow** 버튼 클릭
 | `API has not been used` 오류 | YouTube Data API v3 미활성화 | Google Cloud Console에서 API 활성화 |
 | 앱에서 번들 데이터만 사용 | GitHub Pages 미설정 또는 네트워크 오류 | Pages 설정 확인, URL 접근 테스트 |
 | 특정 가수 결과 0건 | 검색 필터에 걸림 | `scripts/data-sources.json`에서 searchQuery 조정 |
+
+---
+
+## 카테고리 비디오 ID 수집 로직
+
+카테고리별 비디오 ID는 원격/번들 데이터 + 가수 태그 자동 보충으로 구성됩니다.
+
+### 카테고리 검색어 (`src/data/categories.ts`)
+
+| ID | 이름 | `searchQuery` |
+|---|---|---|
+| `ballad` | 트로트 발라드 | `트로트 발라드 명곡` |
+| `upbeat` | 신나는 트로트 | `신나는 트로트 최신` |
+| `classic` | 옛날 트로트 | `70년대 80년대 트로트 명곡` |
+| `latest` | 최신 트로트 | `2024 최신 트로트` |
+| `bedtime` | 잠들기 트로트 | `잠들기 좋은 트로트 발라드` |
+| `morning` | 아침 트로트 | `아침 신나는 트로트` |
+
+> `searchQuery`는 앱 런타임에서 직접 사용되지 않으며, `/youtube-music-fetch` 스킬이나 `scripts/refresh-video-ids.py`에서 비디오 ID를 수집할 때 검색어로 사용됩니다.
+
+### 비디오 ID 로딩 우선순위 (`src/services/remoteData.ts`)
+
+```
+1. 원격 데이터 (GitHub Pages JSON의 categories[id])
+2. 번들 데이터 (categories.ts의 featuredVideoIds)
+3. 어느 쪽이든 15개 미만이면 → 가수 태그 기반 자동 보충
+```
+
+### 가수 태그 자동 보충 (`CATEGORY_TAG_MAP`)
+
+카테고리 비디오가 15개(`TARGET_CATEGORY_SIZE`) 미만일 때, 매핑된 태그를 가진 가수들의 `featuredVideoIds`에서 중복 없이 채웁니다.
+
+| 카테고리 ID | 보충 태그 | 설명 |
+|---|---|---|
+| `ballad` | `['ballad']` | 발라드 태그 가수 |
+| `upbeat` | `['upbeat']` | 신나는 태그 가수 |
+| `classic` | `['classic']` | 클래식 태그 가수 |
+| `latest` | `['latest']` | 최신 태그 가수 |
+| `bedtime` | `['ballad', 'classic']` | 발라드 + 클래식 가수 |
+| `morning` | `['upbeat', 'latest']` | 신나는 + 최신 가수 |
+
+`supplementFromSingerTags()` 함수가 `SINGERS` 배열을 순회하며 해당 태그를 가진 가수의 비디오 ID를 15개까지 채웁니다.
 
 ---
 
