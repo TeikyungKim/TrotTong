@@ -1,26 +1,26 @@
 {
   "version": 1,
-  "generatedAt": "2026-03-28T21:28:38.697327+00:00",
+  "generatedAt": "2026-03-29T21:31:06.441580+00:00",
   "singers": {
     "lim-young-woong": [
       "sFK89gemgKM",
       "sHqFqWDviBg",
       "ewk5MPptBIs",
-      "oQW9lY1ZAJA",
       "30hZXHeB85U",
+      "oQW9lY1ZAJA",
       "xuexbvO29Gk",
       "2WGc-5VdoGw",
       "ss7z2upAvX8",
       "LKQ-18LoFQk",
       "jP2J0qnFtV4",
       "tJut2wIsC1w",
-      "yEHkBifsHPY"
+      "TMfvkhkALbU"
     ],
     "lee-chan-won": [
       "G_m__AKDFKw",
       "AIh7UA7UoYI",
-      "yaeG5iPP414",
       "AhmRaCQayv8",
+      "yaeG5iPP414",
       "68ShTNAwrLc",
       "wBnZWzQirdg",
       "pyk8uMgIXKY"
@@ -44,20 +44,20 @@
       "MRrXRlVd0P0",
       "t77WNxrwvSU",
       "QElBrMTQXdo",
-      "OmlAJV_XOM4"
+      "IJM8kRMrUVI"
     ],
     "joo-hyun-mi": [
-      "siKZMFkIIwY"
+      "siKZMFkIIwY",
+      "-SLn257bF-4"
     ],
     "jin-sung": [
       "tUn7A8otZIY"
     ],
     "jeong-dong-won": [
       "S0QU8-nKQnY",
-      "ymsc-Y19MTk",
       "t9rI88TTNzc",
       "RcJMPMH3sw8",
-      "RvnGjz9Z594"
+      "ymsc-Y19MTk"
     ],
     "hong-ja": [
       "uhFKZ_Tg4nY"
@@ -69,29 +69,29 @@
       "VAb3sGdbbik",
       "1RRHPk4kr9g",
       "dGW6jKhpo5M",
-      "3vni60bh-DA",
       "Zj0U3QuPgKs",
+      "3vni60bh-DA",
       "NmFxACudWCA",
+      "pSRd79GCdmE",
       "dfXHOiFbpBI",
       "NCaMFHWsjC0",
-      "pSRd79GCdmE",
-      "NN_XlFpiVOU",
       "Qo5lrW5wxyw",
-      "dSweSaJpyMs"
+      "dSweSaJpyMs",
+      "iFYEI4ludAw"
     ],
     "tae-jin-a": [
       "JbKmyUwu0EA",
       "rw9tFCiZrkA",
-      "hdp08MbaT1E",
-      "tlTNS3AlvQI",
       "H1eQYfUgFWg",
-      "_JGBTG-l-MI",
+      "tlTNS3AlvQI",
+      "hdp08MbaT1E",
       "a40dV5l1O3g",
-      "4uA-tgzLEI4",
       "GwLsQgoE8sA",
       "HBEGXyy3oUo",
-      "GPWwk2nwog4",
-      "UmJQmk36EEY"
+      "_JGBTG-l-MI",
+      "UmJQmk36EEY",
+      "4uA-tgzLEI4",
+      "GPWwk2nwog4"
     ],
     "seol-un-do": [
       "xnKsDmx4HbM",
@@ -124,77 +124,74 @@
     "nam-jin": [
       "1CDToG89XAE",
       "EHzneQaeH1Q",
-      "PRR5uSvexlI",
-      "QKvLf8jXCm4",
-      "6SvLf-2Qwks",
-      "4E965DnbNYg"
+      "QKvLf8jXCm4"
     ],
     "cho-yong-pil": [
       "kumMqZaEZf4",
       "_uYx13TPm-A",
       "VzVig1HuAYw",
+      "y6pccZYeuBY",
       "s0VOftMC-yE",
       "CsGZEA3gCV8",
-      "y6pccZYeuBY",
+      "8XaepPPD4SQ",
+      "bo_dfa1p950",
       "TzZBgUEX_QM",
       "EA6PLfDueP0",
-      "a6JUaK6Ssc4",
       "SW2m_OGH4eU",
-      "Cu3RyNybGTg",
-      "I6ZBUWQnY3c"
+      "jvp_q3SIuvw"
     ],
     "moon-hee-ok": [
       "XkfVkJ7Gay4",
       "2ttrjSk8JxU",
       "nULij_K0t24",
+      "WHsTwoeQgKQ",
       "VeMGClbFVEg",
       "b2rjoe5wMRE",
-      "WHsTwoeQgKQ",
-      "K0lzHQF-4gc",
       "5nvvWrX4o24",
       "_K6opyUx7kc",
-      "fQ-hcuMgT9Y",
       "YnUpxPCW5Gs",
-      "WhG-BUdumBc"
+      "PfxMnlHKzsU",
+      "K0lzHQF-4gc",
+      "fQ-hcuMgT9Y"
     ],
     "choi-jin-hee": [
       "nR8AJ1I5mac",
       "BVWzd661qu0",
       "0f0lqYnCUVQ",
-      "wPZCs4Bv1rE",
-      "u3NFDFN1FJU",
-      "bfbcKmqctG4",
-      "atYW--38V0w",
       "53SmkitPUo8",
+      "u3NFDFN1FJU",
+      "wPZCs4Bv1rE",
       "2ysejwjm59Y",
-      "Gkgs6Z5XTMI",
+      "atYW--38V0w",
+      "bfbcKmqctG4",
       "X3w8Vg3sST4",
+      "Gkgs6Z5XTMI",
       "YX1MZXjA1tY"
     ],
     "patti-kim": [
       "YqxwIB0-HOA",
       "rEMJqz7V1_s",
       "uAZsjJX_e0E",
-      "1IoymubBdQE",
-      "_QY-4qnoGeg",
       "FVw5grCWfPA",
       "K8tShoRSYqo",
+      "1IoymubBdQE",
+      "_QY-4qnoGeg",
       "fXPOQGN2sME",
-      "3woCcfTB_30",
       "10Uv6YxGUbA",
+      "3woCcfTB_30",
       "5LaMRmKKaFY",
-      "RVLwALjES84"
+      "zcGTaWz1-PQ"
     ],
     "na-mi": [
       "4h4ZLDvpwOQ",
       "bbG8_Gg47-Q",
       "Vgjl6lEeBPc",
       "m7mE_03bqW8",
-      "Qo5ersmTuJ0",
       "InmwW-NB7j0",
       "WRXjV3z-9O4",
+      "Qo5ersmTuJ0",
       "hYQX26ZR1dM",
-      "dsMP_VagYZ4",
+      "GZkoJT1tW08",
       "KoPK3mghUXU",
       "nFQIdOj1fk8",
       "h1PbmMrfjuY"
@@ -229,6 +226,9 @@
       "RKhsHGfrFmY",
       "moVgOwYOXec",
       "2rqAdWXmerc"
+    ],
+    "morning": [
+      "wBnZWzQirdg"
     ]
   }
 }
