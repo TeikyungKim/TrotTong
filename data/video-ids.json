@@ -1,19 +1,19 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-15T21:58:16.661340+00:00",
+  "generatedAt": "2026-05-16T21:47:05.933087+00:00",
   "singers": {
     "lim-young-woong": [
-      "sFK89gemgKM",
       "sHqFqWDviBg",
+      "sFK89gemgKM",
       "ss7z2upAvX8",
       "oQW9lY1ZAJA",
-      "30hZXHeB85U",
-      "xuexbvO29Gk",
       "tJut2wIsC1w",
-      "TMfvkhkALbU",
-      "2WGc-5VdoGw",
+      "xuexbvO29Gk",
+      "yEHkBifsHPY",
+      "30hZXHeB85U",
       "ewk5MPptBIs",
-      "4sOVtBDPTwM",
+      "2WGc-5VdoGw",
+      "TMfvkhkALbU",
       "jP2J0qnFtV4"
     ],
     "lee-chan-won": [
@@ -30,7 +30,8 @@
       "GlVSW0TSm3Y"
     ],
     "song-ga-in": [
-      "Cz_HTS8Sr2w"
+      "Cz_HTS8Sr2w",
+      "vtq4W8bp8B0"
     ],
     "na-hoon-a": [
       "dQPlnJ6SYR0",
@@ -55,8 +56,7 @@
       "ymsc-Y19MTk",
       "RvnGjz9Z594",
       "RcJMPMH3sw8",
-      "t9rI88TTNzc",
-      "SqDdVNNoZr4"
+      "t9rI88TTNzc"
     ],
     "hong-ja": [
       "uhFKZ_Tg4nY"
@@ -69,13 +69,13 @@
       "1RRHPk4kr9g",
       "dGW6jKhpo5M",
       "Qo5lrW5wxyw",
-      "3vni60bh-DA",
-      "NmFxACudWCA",
-      "iFYEI4ludAw",
       "bQciLQ4bq6A",
+      "NmFxACudWCA",
+      "3vni60bh-DA",
       "Zj0U3QuPgKs",
       "dfXHOiFbpBI",
       "NCaMFHWsjC0",
+      "iFYEI4ludAw",
       "dSweSaJpyMs"
     ],
     "tae-jin-a": [
@@ -83,46 +83,44 @@
       "rw9tFCiZrkA",
       "hdp08MbaT1E",
       "H1eQYfUgFWg",
-      "4uA-tgzLEI4",
       "a40dV5l1O3g",
-      "_JGBTG-l-MI",
+      "4uA-tgzLEI4",
       "GPWwk2nwog4",
-      "GwLsQgoE8sA"
+      "_JGBTG-l-MI"
     ],
     "seol-un-do": [
       "xnKsDmx4HbM",
       "sqEI3eJ9OtM",
       "oM4cPK1VlXk",
-      "ICwvMfJkobU",
-      "A955KZkmlzk",
       "zk6PhLvDKCE",
+      "ICwvMfJkobU",
       "RikgmODU33Y",
+      "A955KZkmlzk",
       "FdYqePyNV4g",
-      "NPHKlJIfXCg",
-      "EoUR-8Bq0l4",
+      "AiRtNST8JV4",
       "zIMw2yT00V0",
-      "AiRtNST8JV4"
+      "NPHKlJIfXCg",
+      "EoUR-8Bq0l4"
     ],
     "kim-heung-kook": [
       "FvRjJJG5RCE",
-      "x_u5DfeGG_Q",
       "HhdZSe_lUBM",
       "g2jg40DcdHs",
-      "XeXi7G7Crlg",
       "XAY7Fw5pud0",
+      "XeXi7G7Crlg",
       "8p_N9hE9cNc",
+      "GtcpKEJusNw",
       "Z5u8cqxkDOE",
       "7QHsA9GT7wo",
-      "GtcpKEJusNw",
+      "Jp3srSY5N_Y",
       "ieSNvZvKWTA",
-      "Jp3srSY5N_Y"
+      "ALeFEATldY0"
     ],
     "nam-jin": [
       "OpSGrLPfFbQ",
       "EHzneQaeH1Q",
       "PRR5uSvexlI",
-      "4E965DnbNYg",
-      "6SvLf-2Qwks"
+      "4E965DnbNYg"
     ],
     "cho-yong-pil": [
       "kumMqZaEZf4",
@@ -131,9 +129,9 @@
       "CsGZEA3gCV8",
       "a6JUaK6Ssc4",
       "y6pccZYeuBY",
-      "EA6PLfDueP0",
+      "Cu3RyNybGTg",
+      "u42VwB-faVA",
       "jvp_q3SIuvw",
-      "h6VxAeVhO5s",
       "8XaepPPD4SQ",
       "SW2m_OGH4eU",
       "jEFSC-9XMyo"
@@ -154,28 +152,28 @@
       "nR8AJ1I5mac",
       "0f0lqYnCUVQ",
       "vG1TJct01nY",
-      "2ysejwjm59Y",
       "atYW--38V0w",
-      "wPZCs4Bv1rE",
       "53SmkitPUo8",
+      "wPZCs4Bv1rE",
+      "2ysejwjm59Y",
       "u3NFDFN1FJU",
       "Gkgs6Z5XTMI",
       "bfbcKmqctG4",
-      "X3w8Vg3sST4"
+      "Ee1wuTRtzB0"
     ],
     "patti-kim": [
       "YqxwIB0-HOA",
       "FVw5grCWfPA",
       "K8tShoRSYqo",
-      "1IoymubBdQE",
       "fXPOQGN2sME",
-      "uAZsjJX_e0E",
       "rEMJqz7V1_s",
-      "2jxG0DDK_Kk",
+      "1IoymubBdQE",
+      "uAZsjJX_e0E",
       "_QY-4qnoGeg",
-      "RVLwALjES84",
+      "2jxG0DDK_Kk",
       "3woCcfTB_30",
-      "5LaMRmKKaFY"
+      "5LaMRmKKaFY",
+      "RVLwALjES84"
     ],
     "na-mi": [
       "4h4ZLDvpwOQ",
@@ -185,11 +183,11 @@
       "Qo5ersmTuJ0",
       "InmwW-NB7j0",
       "dsMP_VagYZ4",
-      "NL2c9XUodh0",
       "WRXjV3z-9O4",
+      "NL2c9XUodh0",
       "nFQIdOj1fk8",
       "JkaXpvxA37E",
-      "UeMpw3XRGEU"
+      "cx1_PeLfiys"
     ]
   },
   "categories": {
@@ -202,6 +200,7 @@
       "68ShTNAwrLc"
     ],
     "latest": [
+      "S2IugZP77pQ",
       "6NziWikAG9M"
     ],
     "bedtime": [
@@ -210,7 +209,7 @@
   },
   "playlists": {
     "top10-this-week": [
-      "eXMR3e8SsiQ"
+      "S2IugZP77pQ"
     ],
     "bedtime": [
       "19oT04OuBhg"
