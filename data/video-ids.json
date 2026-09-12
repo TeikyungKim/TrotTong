@@ -1,32 +1,31 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-11T22:57:52.064506+00:00",
+  "generatedAt": "2026-09-12T22:49:52.132777+00:00",
   "singers": {
     "lim-young-woong": [
       "sFK89gemgKM",
-      "d6rrtRhN9YM",
       "yEHkBifsHPY",
       "xuexbvO29Gk",
+      "d6rrtRhN9YM",
+      "oQW9lY1ZAJA",
       "sHqFqWDviBg",
       "ss7z2upAvX8",
-      "TMfvkhkALbU",
-      "oQW9lY1ZAJA",
       "tJut2wIsC1w",
+      "TMfvkhkALbU",
       "LKQ-18LoFQk",
       "An7ZnTEz40s",
-      "30hZXHeB85U"
+      "ewk5MPptBIs"
     ],
     "lee-chan-won": [
+      "wBnZWzQirdg",
       "AIh7UA7UoYI",
       "AhmRaCQayv8",
-      "wBnZWzQirdg",
       "yaeG5iPP414",
       "68ShTNAwrLc",
       "G_m__AKDFKw"
     ],
     "young-tak": [
-      "fc-lKLdZf1Q",
-      "iF_LDSmFDxE"
+      "fc-lKLdZf1Q"
     ],
     "song-ga-in": [
       "EOrDQF6YdT8",
@@ -34,17 +33,18 @@
       "f1jomAOBQTE",
       "to7nIrcWHHo",
       "wZULOvUhWsQ",
+      "HJTvWes1yDA",
       "CNMoixIAT1g"
     ],
     "na-hoon-a": [
-      "NL2W7DKzZV4",
       "uGJoFdgE6ts",
+      "NL2W7DKzZV4",
       "dQPlnJ6SYR0",
       "IONYz6LNZgA",
       "c0H3vXGKBlk",
       "usHvad89tbc",
       "vDqU0YQSysE",
-      "QElBrMTQXdo"
+      "tm3eX7IWInE"
     ],
     "joo-hyun-mi": [
       "siKZMFkIIwY"
@@ -57,16 +57,16 @@
       "S0QU8-nKQnY",
       "t9rI88TTNzc",
       "ymsc-Y19MTk",
-      "xzz_MDGZeBI",
       "RcJMPMH3sw8",
-      "bBEIH48bwSU",
+      "xzz_MDGZeBI",
       "RvnGjz9Z594",
-      "KJeohosstX8"
+      "KJeohosstX8",
+      "bBEIH48bwSU",
+      "SqDdVNNoZr4"
     ],
     "hong-ja": [
       "nChfBBMbJZ8",
-      "uhFKZ_Tg4nY",
-      "X2y7tPpREx0"
+      "uhFKZ_Tg4nY"
     ],
     "park-hyun-bin": [
       "u1HfOE3_s2A"
@@ -76,23 +76,24 @@
       "1RRHPk4kr9g",
       "Qo5lrW5wxyw",
       "dfXHOiFbpBI",
-      "dGW6jKhpo5M",
-      "TUdKuQ0HeAw",
       "bQciLQ4bq6A",
-      "NmFxACudWCA",
-      "3vni60bh-DA",
+      "dGW6jKhpo5M",
       "NCaMFHWsjC0",
+      "TUdKuQ0HeAw",
       "L6r9uoe7zDg",
-      "pSRd79GCdmE"
+      "3vni60bh-DA",
+      "NmFxACudWCA",
+      "NN_XlFpiVOU"
     ],
     "tae-jin-a": [
-      "JbKmyUwu0EA",
       "H1eQYfUgFWg",
-      "4uA-tgzLEI4",
+      "JbKmyUwu0EA",
       "riNkPxRHhLc",
+      "4uA-tgzLEI4",
       "a40dV5l1O3g",
-      "hdp08MbaT1E",
+      "UQqZAFdfdMk",
       "GwLsQgoE8sA",
+      "hdp08MbaT1E",
       "gy7l2NNb_qI",
       "UmJQmk36EEY",
       "rw9tFCiZrkA",
@@ -104,27 +105,27 @@
       "sqEI3eJ9OtM",
       "ICwvMfJkobU",
       "NPHKlJIfXCg",
-      "c_BdJsd88Tc",
+      "7WYh9lHQ2YA",
       "WJLvnwHVZLY",
-      "zk6PhLvDKCE",
+      "c_BdJsd88Tc",
+      "kvO2d4nEJ58",
       "AiRtNST8JV4",
       "oM4cPK1VlXk",
-      "7WYh9lHQ2YA",
-      "kvO2d4nEJ58"
+      "zk6PhLvDKCE"
     ],
     "kim-heung-kook": [
       "HhdZSe_lUBM",
-      "g2jg40DcdHs",
       "XAY7Fw5pud0",
-      "8p_N9hE9cNc",
+      "g2jg40DcdHs",
       "XeXi7G7Crlg",
-      "ALeFEATldY0",
+      "8p_N9hE9cNc",
       "7QHsA9GT7wo",
       "E-kfcseoOyU",
-      "Lwr-NgtX3Io",
+      "ALeFEATldY0",
       "0TygAcxGxgM",
       "ieSNvZvKWTA",
-      "SkHPHH5gN70"
+      "SkHPHH5gN70",
+      "Jp3srSY5N_Y"
     ],
     "nam-jin": [
       "OpSGrLPfFbQ",
@@ -135,59 +136,59 @@
     ],
     "cho-yong-pil": [
       "kumMqZaEZf4",
-      "u42VwB-faVA",
-      "J_067MeuFUw",
       "jEFSC-9XMyo",
+      "u42VwB-faVA",
       "TzZBgUEX_QM",
       "eE3xJIUn5dU",
+      "43nmgwdMu54",
       "PygnZGw_6fw",
-      "h6VxAeVhO5s",
-      "fAVQnVkB2ho",
-      "a6JUaK6Ssc4",
+      "_uYx13TPm-A",
+      "J_067MeuFUw",
       "dSmQDOk3U-4",
+      "h6VxAeVhO5s",
       "9Bn91NlZdQw"
     ],
     "moon-hee-ok": [
       "_K6opyUx7kc",
       "VeMGClbFVEg",
       "ylmuav6lqzg",
-      "2ttrjSk8JxU",
+      "XkfVkJ7Gay4",
+      "b2rjoe5wMRE",
       "dJNcUNAD41E",
-      "j6pV-wqdFu4",
       "aJ1GDoUtc7Q",
+      "j6pV-wqdFu4",
+      "2ttrjSk8JxU",
       "WHsTwoeQgKQ",
       "S3ILxKRsUrU",
-      "b2rjoe5wMRE",
-      "aBJgv3U-rpM",
-      "fQ-hcuMgT9Y"
+      "aBJgv3U-rpM"
     ],
     "choi-jin-hee": [
       "nR8AJ1I5mac",
       "BVWzd661qu0",
       "2ysejwjm59Y",
       "_CnvG786xEA",
-      "53SmkitPUo8",
-      "atYW--38V0w",
-      "wPZCs4Bv1rE",
       "lWf4q2-dYbg",
-      "MNRAydYQeEA",
-      "X3w8Vg3sST4",
+      "wPZCs4Bv1rE",
+      "53SmkitPUo8",
       "Gkgs6Z5XTMI",
+      "atYW--38V0w",
+      "X3w8Vg3sST4",
+      "MNRAydYQeEA",
       "0f0lqYnCUVQ"
     ],
     "patti-kim": [
       "YqxwIB0-HOA",
-      "rEMJqz7V1_s",
       "uAZsjJX_e0E",
+      "fXPOQGN2sME",
+      "rEMJqz7V1_s",
       "1IoymubBdQE",
       "FVw5grCWfPA",
-      "ju0SDaZcO4U",
-      "fXPOQGN2sME",
       "3woCcfTB_30",
-      "TBCLiQSy85M",
-      "_QY-4qnoGeg",
+      "ju0SDaZcO4U",
       "zcGTaWz1-PQ",
-      "K8tShoRSYqo"
+      "_QY-4qnoGeg",
+      "K8tShoRSYqo",
+      "93cVUtvaaMI"
     ],
     "na-mi": [
       "4h4ZLDvpwOQ",
@@ -195,12 +196,12 @@
       "m7mE_03bqW8",
       "Vgjl6lEeBPc",
       "Qo5ersmTuJ0",
-      "hYQX26ZR1dM",
       "InmwW-NB7j0",
       "nFQIdOj1fk8",
       "JkaXpvxA37E",
-      "GZkoJT1tW08",
       "5M8YbSSghOg",
+      "hYQX26ZR1dM",
+      "GZkoJT1tW08",
       "OflzrBPOkX0"
     ]
   },
@@ -208,13 +209,16 @@
     "ballad": [
       "RMhQOpDUj3U",
       "wD9nunl0nKY",
-      "JU0CLaT3Bfs",
-      "xFT8sncDyRo",
       "n8Duupq6bwA",
-      "4VysJ-p6Olk",
-      "TGN0xJz7USk",
       "uuAGcNWRI8s",
-      "kRhzvWQFdsQ"
+      "TGN0xJz7USk",
+      "kRhzvWQFdsQ",
+      "4VysJ-p6Olk",
+      "LNcvsKBUBIc",
+      "fIcad3FU1Gw",
+      "qLct4bf6Onk",
+      "K_TozLuF0J8",
+      "73hpW0Lr4To"
     ],
     "upbeat": [
       "68ShTNAwrLc",
@@ -224,18 +228,10 @@
       "5tlR3opiAFY"
     ],
     "latest": [
-      "-iHZorDduPs",
-      "6NziWikAG9M",
       "Jxgbfc89hNI",
-      "BLv8g9YzHHc",
       "L8ZnXgbyUuc",
-      "cRPDH72WP8c",
-      "XVNnC66jfno",
-      "7NGurmeEsK0",
-      "JsyEo4lE3K0",
-      "8R2UTnAbfTg",
-      "QiQJxMQ6TMU",
-      "5hL7uPsISY0"
+      "Qe8fa4b5xNU",
+      "6NziWikAG9M"
     ],
     "bedtime": [
       "mo9zv9P-anI"
